@@ -1,0 +1,4 @@
+ACECoreDataManager
+==================
+
+Core data utitls
