@@ -8,6 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
+@class ACECoreDataManager;
+
+@protocol ACECoreDataDelegate <NSObject>
+
+@required
+- (NSURL *)modelURLForManager:(ACECoreDataManager *)manager;
+- (NSURL *)storeURLForManager:(ACECoreDataManager *)manager;
+
+@end
+
+#pragma mark -
+
 @interface ACECoreDataManager : NSObject
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+@property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
+
+- (void)saveContext:(void (^)(NSError *error))errorBlock;
+- (void)saveContext;
+
++ (instancetype)sharedManager;
 
 @end
