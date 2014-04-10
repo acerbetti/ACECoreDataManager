@@ -73,6 +73,8 @@
         [emptyLabel setText:NSLocalizedString(@"Empty table", nil)];
         [emptyLabel sizeToFit];
         [emptyLabel setCenter:self.view.center];
+        [self.view addSubview:emptyLabel];
+        
         _emptyView = emptyLabel;
     }
     return _emptyView;
@@ -187,6 +189,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    [self refreshViewMode];
     [self.tableView endUpdates];
 }
 
