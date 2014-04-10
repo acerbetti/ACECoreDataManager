@@ -26,6 +26,7 @@
 		80C5A71018F606250061B39C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 80C5A70E18F606250061B39C /* InfoPlist.strings */; };
 		80C5A71218F606250061B39C /* ACECoreDataManagerDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C5A71118F606250061B39C /* ACECoreDataManagerDemoTests.m */; };
 		80C5A71E18F606650061B39C /* ACECoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C5A71D18F606650061B39C /* ACECoreDataManager.m */; };
+		80C953AC18F61EE000851113 /* ACECoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C953AB18F61EE000851113 /* ACECoreDataTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,8 @@
 		80C5A71118F606250061B39C /* ACECoreDataManagerDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManagerDemoTests.m; sourceTree = "<group>"; };
 		80C5A71C18F606650061B39C /* ACECoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataManager.h; sourceTree = "<group>"; };
 		80C5A71D18F606650061B39C /* ACECoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManager.m; sourceTree = "<group>"; };
+		80C953AA18F61EE000851113 /* ACECoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataTableViewController.h; sourceTree = "<group>"; };
+		80C953AB18F61EE000851113 /* ACECoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +173,7 @@
 		80C5A71B18F606540061B39C /* ACECoreDataManager */ = {
 			isa = PBXGroup;
 			children = (
+				80C953AD18F61EEA00851113 /* UI */,
 				80C5A71C18F606650061B39C /* ACECoreDataManager.h */,
 				80C5A71D18F606650061B39C /* ACECoreDataManager.m */,
 			);
@@ -186,6 +190,15 @@
 				80C5A6F818F606250061B39C /* ACEMasterViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		80C953AD18F61EEA00851113 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				80C953AA18F61EE000851113 /* ACECoreDataTableViewController.h */,
+				80C953AB18F61EE000851113 /* ACECoreDataTableViewController.m */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,6 +302,7 @@
 				80C5A6F918F606250061B39C /* ACEMasterViewController.m in Sources */,
 				80C5A6F018F606250061B39C /* ACEAppDelegate.m in Sources */,
 				80C5A6F618F606250061B39C /* ACECoreDataManagerDemo.xcdatamodeld in Sources */,
+				80C953AC18F61EE000851113 /* ACECoreDataTableViewController.m in Sources */,
 				80C5A6EC18F606250061B39C /* main.m in Sources */,
 				80C5A71E18F606650061B39C /* ACECoreDataManager.m in Sources */,
 				80C5A6FC18F606250061B39C /* ACEDetailViewController.m in Sources */,
