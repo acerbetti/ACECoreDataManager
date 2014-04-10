@@ -85,6 +85,7 @@
     if (_fetchedResultsController == nil) {
         
         NSManagedObjectContext *context = [[ACECoreDataManager sharedManager] managedObjectContext];
+        
         _fetchedResultsController =
         [[NSFetchedResultsController alloc] initWithFetchRequest:[self fetchRequest:context]
                                             managedObjectContext:context
@@ -95,7 +96,7 @@
         
         NSError *error = nil;
         if (![self.fetchedResultsController performFetch:&error]) {
-            
+            [self fetchRequestFailedWithError:error];
         }
     }
     return _fetchedResultsController;
