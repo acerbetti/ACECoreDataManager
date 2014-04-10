@@ -8,7 +8,6 @@
 
 #import "ACEAppDelegate.h"
 #import "ACECoreDataManager.h"
-#import "ACEMasterViewController.h"
 
 @interface ACEAppDelegate()<ACECoreDataDelegate>
 @end
@@ -17,13 +16,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    ACEMasterViewController *controller = (ACEMasterViewController *)navigationController.topViewController;
-    
     ACECoreDataManager *manager = [ACECoreDataManager sharedManager];
     manager.delegate = self;
-    controller.managedObjectContext = manager.managedObjectContext;
     
     return YES;
 }

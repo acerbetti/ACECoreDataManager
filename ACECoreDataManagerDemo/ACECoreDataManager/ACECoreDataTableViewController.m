@@ -1,14 +1,29 @@
+// ACECoreDataTableViewController.m
 //
-//  ACECoreDataTableViewController.m
-//  ACECoreDataManagerDemo
+// Copyright (c) 2014 Stefano Acerbetti
 //
-//  Created by Stefano Acerbetti on 4/9/14.
-//  Copyright (c) 2014 Aceland. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #import "ACECoreDataTableViewController.h"
+#import "ACECoreDataManager.h"
 
-@interface ACECoreDataTableViewController ()
+@interface ACECoreDataTableViewController ()<NSFetchedResultsControllerDelegate>
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @end
 
@@ -37,6 +52,71 @@
         self.tableView.hidden = NO;
         self.emptyView.hidden = YES;
     }
+}
+
+
+#pragma mark - Properties
+
+- (UITableView *)tableView
+{
+    if (_tableView == nil) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    }
+    return _tableView;
+}
+
+- (UIView *)emptyView
+{
+    if (_emptyView == nil) {
+        UILabel *emptyLabel = [[UILabel alloc] init];
+        [emptyLabel setText:NSLocalizedString(@"Empty table", nil)];
+        [emptyLabel sizeToFit];
+        [emptyLabel setCenter:self.view.center];
+        _emptyView = emptyLabel;
+    }
+    return _emptyView;
+}
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController == nil) {
+        
+        NSManagedObjectContext *context = [[ACECoreDataManager sharedManager] managedObjectContext];
+        _fetchedResultsController =
+        [[NSFetchedResultsController alloc] initWithFetchRequest:[self fetchRequest:context]
+                                            managedObjectContext:context
+                                              sectionNameKeyPath:self.fetchSectionNameKeyPath
+                                                       cacheName:self.fetchCacheName];
+        
+        _fetchedResultsController.delegate = self;
+        
+        NSError *error = nil;
+        if (![self.fetchedResultsController performFetch:&error]) {
+            
+        }
+    }
+    return _fetchedResultsController;
+}
+
+- (NSFetchRequest *)fetchRequest:(NSManagedObjectContext *)context;
+{
+    return nil;
+}
+
+- (void)fetchRequestFailedWithError:(NSError *)error
+{
+    
+}
+
+- (NSString *)fetchSectionNameKeyPath
+{
+    return nil;
+}
+
+- (NSString *)fetchCacheName
+{
+    return nil;
 }
 
 
