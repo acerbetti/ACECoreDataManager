@@ -26,9 +26,15 @@
 
 @property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
 
+// save
 - (void)saveContext:(void (^)(NSError *error))errorBlock;
 - (void)saveContext;
 
+// delete
+- (void)deleteContext:(void (^)(NSError *error))errorBlock;
+- (void)deleteContext;
+
+// singleton
 + (instancetype)sharedManager;
 
 @end
