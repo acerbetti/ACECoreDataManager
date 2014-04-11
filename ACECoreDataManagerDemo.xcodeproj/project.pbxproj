@@ -24,9 +24,12 @@
 		80C5A70718F606250061B39C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6E118F606250061B39C /* UIKit.framework */; };
 		80C5A70818F606250061B39C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6E318F606250061B39C /* CoreData.framework */; };
 		80C5A71018F606250061B39C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 80C5A70E18F606250061B39C /* InfoPlist.strings */; };
-		80C5A71218F606250061B39C /* ACECoreDataManagerDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C5A71118F606250061B39C /* ACECoreDataManagerDemoTests.m */; };
 		80C5A71E18F606650061B39C /* ACECoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C5A71D18F606650061B39C /* ACECoreDataManager.m */; };
 		80C953AC18F61EE000851113 /* ACECoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C953AB18F61EE000851113 /* ACECoreDataTableViewController.m */; };
+		80C953B218F74E5A00851113 /* ACECoreDataManager+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C953B118F74E5A00851113 /* ACECoreDataManager+Sync.m */; };
+		80C953B718F86B2400851113 /* ACECoreDataManagerSyncTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C953B618F86B2400851113 /* ACECoreDataManagerSyncTestCase.m */; };
+		80C953BA18F86BBE00851113 /* TestModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 80C953B818F86BBE00851113 /* TestModel.xcdatamodeld */; };
+		80C953BD18F86D3500851113 /* ACECoreDataManager+Operation.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C953BC18F86D3500851113 /* ACECoreDataManager+Operation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,11 +65,16 @@
 		80C5A70418F606250061B39C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		80C5A70D18F606250061B39C /* ACECoreDataManagerDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ACECoreDataManagerDemoTests-Info.plist"; sourceTree = "<group>"; };
 		80C5A70F18F606250061B39C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		80C5A71118F606250061B39C /* ACECoreDataManagerDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManagerDemoTests.m; sourceTree = "<group>"; };
 		80C5A71C18F606650061B39C /* ACECoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataManager.h; sourceTree = "<group>"; };
 		80C5A71D18F606650061B39C /* ACECoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManager.m; sourceTree = "<group>"; };
 		80C953AA18F61EE000851113 /* ACECoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataTableViewController.h; sourceTree = "<group>"; };
 		80C953AB18F61EE000851113 /* ACECoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataTableViewController.m; sourceTree = "<group>"; };
+		80C953B018F74E5A00851113 /* ACECoreDataManager+Sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ACECoreDataManager+Sync.h"; sourceTree = "<group>"; };
+		80C953B118F74E5A00851113 /* ACECoreDataManager+Sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ACECoreDataManager+Sync.m"; sourceTree = "<group>"; };
+		80C953B618F86B2400851113 /* ACECoreDataManagerSyncTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManagerSyncTestCase.m; sourceTree = "<group>"; };
+		80C953B918F86BBE00851113 /* TestModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestModel.xcdatamodel; sourceTree = "<group>"; };
+		80C953BB18F86D3500851113 /* ACECoreDataManager+Operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ACECoreDataManager+Operation.h"; sourceTree = "<group>"; };
+		80C953BC18F86D3500851113 /* ACECoreDataManager+Operation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ACECoreDataManager+Operation.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +163,7 @@
 		80C5A70B18F606250061B39C /* ACECoreDataManagerDemoTests */ = {
 			isa = PBXGroup;
 			children = (
-				80C5A71118F606250061B39C /* ACECoreDataManagerDemoTests.m */,
+				80C953B618F86B2400851113 /* ACECoreDataManagerSyncTestCase.m */,
 				80C5A70C18F606250061B39C /* Supporting Files */,
 			);
 			path = ACECoreDataManagerDemoTests;
@@ -166,6 +174,7 @@
 			children = (
 				80C5A70D18F606250061B39C /* ACECoreDataManagerDemoTests-Info.plist */,
 				80C5A70E18F606250061B39C /* InfoPlist.strings */,
+				80C953B818F86BBE00851113 /* TestModel.xcdatamodeld */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -174,6 +183,10 @@
 			isa = PBXGroup;
 			children = (
 				80C953AD18F61EEA00851113 /* UI */,
+				80C953BB18F86D3500851113 /* ACECoreDataManager+Operation.h */,
+				80C953BC18F86D3500851113 /* ACECoreDataManager+Operation.m */,
+				80C953B018F74E5A00851113 /* ACECoreDataManager+Sync.h */,
+				80C953B118F74E5A00851113 /* ACECoreDataManager+Sync.m */,
 				80C5A71C18F606650061B39C /* ACECoreDataManager.h */,
 				80C5A71D18F606650061B39C /* ACECoreDataManager.m */,
 			);
@@ -302,6 +315,7 @@
 				80C5A6F918F606250061B39C /* ACEMasterViewController.m in Sources */,
 				80C5A6F018F606250061B39C /* ACEAppDelegate.m in Sources */,
 				80C5A6F618F606250061B39C /* ACECoreDataManagerDemo.xcdatamodeld in Sources */,
+				80C953B218F74E5A00851113 /* ACECoreDataManager+Sync.m in Sources */,
 				80C953AC18F61EE000851113 /* ACECoreDataTableViewController.m in Sources */,
 				80C5A6EC18F606250061B39C /* main.m in Sources */,
 				80C5A71E18F606650061B39C /* ACECoreDataManager.m in Sources */,
@@ -313,7 +327,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80C5A71218F606250061B39C /* ACECoreDataManagerDemoTests.m in Sources */,
+				80C953B718F86B2400851113 /* ACECoreDataManagerSyncTestCase.m in Sources */,
+				80C953BA18F86BBE00851113 /* TestModel.xcdatamodeld in Sources */,
+				80C953BD18F86D3500851113 /* ACECoreDataManager+Operation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +547,16 @@
 			);
 			currentVersion = 80C5A6F518F606250061B39C /* ACECoreDataManagerDemo.xcdatamodel */;
 			path = ACECoreDataManagerDemo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		80C953B818F86BBE00851113 /* TestModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				80C953B918F86BBE00851113 /* TestModel.xcdatamodel */,
+			);
+			currentVersion = 80C953B918F86BBE00851113 /* TestModel.xcdatamodel */;
+			path = TestModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

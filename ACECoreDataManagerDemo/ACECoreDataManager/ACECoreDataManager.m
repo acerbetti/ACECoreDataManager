@@ -50,6 +50,8 @@
 {
     self = [super init];
     if (self) {
+        self.autoSave = YES;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(saveContext)
                                                      name:UIApplicationWillTerminateNotification
@@ -173,6 +175,29 @@
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(saveContext) object:nil];
         [self performSelector:@selector(saveContext) withObject:nil afterDelay:kSaveContextAfterInterval];
     }
+}
+
+
+#pragma mark - Helpers
+
+- (NSEntityDescription *)entityWithName:(NSString *)entityName
+{
+    return [NSEntityDescription entityForName:entityName
+                       inManagedObjectContext:self.managedObjectContext];
+}
+
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
+{
+    // looking for the index attribute
+    NSDictionary *destAttributes = [entity attributesByName];
+    for (NSString *key in destAttributes) {
+        
+        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
+        if (destAttr.isIndexed) {
+            return destAttr;
+        }
+    }
+    return nil;
 }
 
 
