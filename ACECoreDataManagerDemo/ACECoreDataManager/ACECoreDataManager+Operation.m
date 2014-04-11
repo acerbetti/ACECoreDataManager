@@ -10,6 +10,46 @@
 
 @implementation ACECoreDataManager (Operation)
 
+#pragma mark - Insert
+
+- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName withDataBlock:(DataBlock)block
+{
+    // create a new object
+    __block NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName
+                                                            inManagedObjectContext:self.managedObjectContext];
+    
+    
+    if (block != nil) {
+        // populate the object
+        NSDictionary *attributes = [[self entityWithName:entityName] attributesByName];
+        [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
+            id value = block(key, attribute.attributeType);
+            [object setValue:value forKey:key];
+        }];
+    }
+    
+    return object;
+}
+
+- (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName
+{
+    return [self insertObjectInEntity:entityName
+                        withDataBlock:^id(NSString *key, NSAttributeType attributeType) {
+                            // very simple basic case
+                            return [dictionary objectForKey:key];
+                        }];
+}
+
+- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
+{
+    for (NSDictionary *dictionary in dataArray) {
+        [self insertDictionary:dictionary inEntityName:entityName];
+    }
+}
+
+
+#pragma mark - Remove
+
 - (void)removeAllFromEntityName:(NSString *)entityName error:(NSError **)error
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];

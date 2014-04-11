@@ -39,6 +39,20 @@
 
 #pragma mark - Helpers
 
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
+{
+    // looking for the index attribute
+    NSDictionary *destAttributes = [entity attributesByName];
+    for (NSString *key in destAttributes) {
+        
+        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
+        if (destAttr.isIndexed) {
+            return destAttr;
+        }
+    }
+    return nil;
+}
+
 - (NSArray *)sortArray:(NSArray *)dataArray withIndex:(NSString *)indexName
 {
     return [dataArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {

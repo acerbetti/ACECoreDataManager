@@ -43,7 +43,6 @@
 
 // helpers
 - (NSEntityDescription *)entityWithName:(NSString *)entityName;
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
 
 // save
 - (void)saveContext:(void (^)(NSError *error))errorBlock;

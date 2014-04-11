@@ -8,7 +8,13 @@
 
 #import "ACECoreDataManager.h"
 
+typedef id (^DataBlock)(NSString *key, NSAttributeType attributeType);
+
 @interface ACECoreDataManager (Operation)
+
+- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName withDataBlock:(DataBlock)block;
+- (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName;
+- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 
 - (void)removeAllFromEntityName:(NSString *)entityName error:(NSError **)error;
 
