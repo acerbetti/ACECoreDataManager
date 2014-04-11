@@ -27,35 +27,46 @@
 
 - (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
+    [self beginUpdates];
+    
     for (NSDictionary *dictionary in dataArray) {
         [self insertDictionary:dictionary inEntityName:entityName];
     }
+    
+    [self endUpdates];
 }
 
 - (void)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
+    [self beginUpdates];
+    
     // get the entity, and the index
     NSEntityDescription *entity = [self entityWithName:entityName];
-    NSAttributeDescription *index = [self indexedAttributeForEntity:entity];
+    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
     
     // sort the data array based on the index
-    NSString *indexName = index.name;
     NSArray *sortedArray = [self sortArray:dataArray withIndex:indexName];
-    NSArray *sortedObjects = [self sortManagedObjectsForEntity:entity withIndex:indexName];
+    NSArray *sortedObjects = [self sortManagedObjectsForEntityName:entityName withIndex:indexName];
     
-    NSInteger dataIndex = 0;
-    NSMutableSet *objectToDelete = [NSMutableSet set];
-    
-    id value1, value2;
+    NSManagedObjectContext *context = self.managedObjectContext;
+    NSUInteger dataIndex = 0, arrayCount = sortedArray.count;
     for (NSManagedObject *object in sortedObjects) {
-        value1 = [object valueForKey:indexName];
-        
-        NSInteger copyIndex = dataIndex;
-        do {
-            value2 = sortedArray[dataIndex++];
+    
+        if (dataIndex < arrayCount) {
+            dataIndex++;
+            
+        } else {
+            [context deleteObject:object];
         }
-        while (value1);
     }
+    
+    // add the rest of the pack to core data
+    for ( ; dataIndex < arrayCount; ++dataIndex) {
+        NSDictionary *dataDict = sortedArray[dataIndex];
+        [self insertDictionary:dataDict inEntityName:entityName];
+    }
+    
+    [self endUpdates];
 }
 
 
@@ -70,19 +81,10 @@
     }];
 }
 
-- (NSArray *)sortManagedObjectsForEntity:(NSEntityDescription *)entity withIndex:(NSString *)indexName
+- (NSArray *)sortManagedObjectsForEntityName:(NSString *)entityName withIndex:(NSString *)indexName
 {
-    // sort the existing object by the index
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:indexName ascending:YES]]];
-    
-    NSError *error = nil;
-    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (error == nil) {
-        return fetchedObjects;
-    }
-    return nil;
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:indexName ascending:YES];
+    return [self fetchAllObjectsForInEntity:entityName sortDescriptor:sortDescriptor];
 }
 
 @end

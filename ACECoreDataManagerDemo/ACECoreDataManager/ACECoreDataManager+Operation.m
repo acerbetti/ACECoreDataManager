@@ -110,9 +110,8 @@
     [fetchRequest setEntity:[self entityWithName:entityName]];
     [fetchRequest setIncludesPropertyValues:NO];
     
-    // I want to delete all the objects together, disabling auto save
-    BOOL oldAutoSave = self.autoSave;
-    self.autoSave = NO;
+    // I want to delete all the objects together
+    [self beginUpdates];
     
     NSError *error;
     NSManagedObjectContext *context = self.managedObjectContext;
@@ -125,9 +124,7 @@
         [self handleError:error];
     }
     
-    // restore the previous mode and force a save
-    self.autoSave = oldAutoSave;
-    [self saveContext];
+    [self endUpdates];
 }
 
 @end

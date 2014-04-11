@@ -29,6 +29,7 @@
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) NSPersistentStore *persistentStore;
+@property (assign, nonatomic) BOOL autoSave; // save the context when something change
 @end
 
 @implementation ACECoreDataManager
@@ -181,7 +182,7 @@
 
 - (void)contextObjectsDidChange:(NSNotification *)notification
 {
-    if (notification.object == self.managedObjectContext) {
+    if (notification.object == self.managedObjectContext && self.autoSave) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(saveContext) object:nil];
         [self performSelector:@selector(saveContext) withObject:nil afterDelay:kSaveContextAfterInterval];
     }
@@ -211,7 +212,7 @@
 }
 
 
-#pragma mark - Save
+#pragma mark - Context
 
 - (void)saveContext
 {
@@ -238,9 +239,6 @@
     }
 }
 
-
-#pragma mark - Delete
-
 - (void)deleteContext
 {
     // delete all the caches
@@ -265,6 +263,20 @@
     
     _persistentStoreCoordinator = nil;
     _managedObjectContext = nil;
+}
+
+
+#pragma mark - Atomic Updates
+
+- (void)beginUpdates
+{
+    self.autoSave = NO;
+}
+
+- (void)endUpdates
+{
+    [self saveContext];
+    self.autoSave = YES;
 }
 
 @end

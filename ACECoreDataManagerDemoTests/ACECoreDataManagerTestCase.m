@@ -66,6 +66,37 @@
     XCTAssertEqualObjects( [testDictionary valueForKey:@"name"], [object valueForKey:@"name"], @"Name doesn't match");
 }
 
+- (void)testUpsertToEmptyData
+{
+    NSArray *dictionaries = @[ [self dictionaryWithId:1], [self dictionaryWithId:2], [self dictionaryWithId:3] ];
+    [[ACECoreDataManager sharedManager] upsertArrayOfDictionary:dictionaries inEntityName:kEntityNameTest];
+    
+    NSArray *objects = [[ACECoreDataManager sharedManager] fetchAllObjectsForInEntity:kEntityNameTest
+                                                                       sortDescriptor:nil];
+    
+    XCTAssertEqual(dictionaries.count, objects.count, @"Object count mismatch");
+}
+
+- (void)testUpsertFromEmptyData
+{
+    NSArray *dictionaries = @[ [self dictionaryWithId:1], [self dictionaryWithId:2], [self dictionaryWithId:3] ];
+    [[ACECoreDataManager sharedManager] insertArrayOfDictionary:dictionaries inEntityName:kEntityNameTest];
+    
+    NSArray *objects = [[ACECoreDataManager sharedManager] fetchAllObjectsForInEntity:kEntityNameTest
+                                                                       sortDescriptor:nil];
+    
+    XCTAssertEqual(dictionaries.count, objects.count, @"Insert count mismatch");
+    
+    
+    [[ACECoreDataManager sharedManager] upsertArrayOfDictionary:nil inEntityName:kEntityNameTest];
+    
+    objects = [[ACECoreDataManager sharedManager] fetchAllObjectsForInEntity:kEntityNameTest
+                                                              sortDescriptor:nil];
+    
+    XCTAssertEqual(0, objects.count, @"Final count mismatch");
+}
+
+
 
 #pragma mark - Helpers
 

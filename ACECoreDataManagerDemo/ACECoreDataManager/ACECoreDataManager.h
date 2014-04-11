@@ -42,7 +42,6 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
-@property (assign, nonatomic) BOOL autoSave; // save the context when something change
 
 // helpers
 - (NSEntityDescription *)entityWithName:(NSString *)entityName;
@@ -52,6 +51,10 @@
 // context
 - (void)saveContext;
 - (void)deleteContext;
+
+// atomic updates
+- (void)beginUpdates;
+- (void)endUpdates;
 
 // singleton
 + (instancetype)sharedManager;
