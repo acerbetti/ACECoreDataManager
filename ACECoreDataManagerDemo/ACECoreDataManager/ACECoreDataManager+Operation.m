@@ -40,17 +40,32 @@
                         }];
 }
 
-- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
+
+#pragma mark - Fetch
+
+- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor
 {
-    for (NSDictionary *dictionary in dataArray) {
-        [self insertDictionary:dictionary inEntityName:entityName];
+    return [self fetchAllObjectsForInEntity:entityName sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil];
+}
+
+- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[self entityWithName:entityName]];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error;
+    NSArray *objects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (error != nil) {
+        [self handleError:error];
     }
+    return objects;
 }
 
 
 #pragma mark - Remove
 
-- (void)removeAllFromEntityName:(NSString *)entityName error:(NSError **)error
+- (void)removeAllFromEntityName:(NSString *)entityName
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[self entityWithName:entityName]];
@@ -60,10 +75,15 @@
     BOOL oldAutoSave = self.autoSave;
     self.autoSave = NO;
     
+    NSError *error;
     NSManagedObjectContext *context = self.managedObjectContext;
-    NSArray *objects = [context executeFetchRequest:fetchRequest error:error];
-    for (NSManagedObject *object in objects) {
-        [context deleteObject:object];
+    NSArray *objects = [context executeFetchRequest:fetchRequest error:&error];
+    if (error == nil) {
+        for (NSManagedObject *object in objects) {
+            [context deleteObject:object];
+        }        
+    } else {
+        [self handleError:error];
     }
     
     // restore the previous mode and force a save

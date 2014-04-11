@@ -65,6 +65,16 @@
     return self;
 }
 
+- (void)handleError:(NSError *)error
+{
+    if ([self.delegate respondsToSelector:@selector(coreDataManager:didFailOperationWithError:)]) {
+        [self.delegate coreDataManager:self didFailOperationWithError:error];
+        
+    } else {
+        NSLog(@"Core Manager Error [%d]: %@", error.code, error.localizedDescription);
+    }
+}
+
 - (void)dealloc
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self
@@ -189,7 +199,7 @@
 
 #pragma mark - Save
 
-- (void)saveContext:(void (^)(NSError *error))errorBlock
+- (void)saveContext
 {
     if ([self.managedObjectContext hasChanges]) {
         [self.managedObjectContext performBlock:^{
@@ -202,29 +212,22 @@
                     
                     NSError *error;
                     // save parent to disk asynchronously
-                    if (![self.privateWriterContext save:&error] && errorBlock) {
-                        errorBlock(error);
+                    if (![self.privateWriterContext save:&error]) {
+                        [self handleError:error];
                     }
                 }];
                 
-            } else if (errorBlock) {
-                errorBlock(error);
+            } else {
+                [self handleError:error];
             }
         }];
     }
 }
 
-- (void)saveContext
-{
-    [self saveContext:^(NSError *error) {
-        NSLog(@"Error saving on disk: %@", error.localizedDescription);
-    }];
-}
-
 
 #pragma mark - Delete
 
-- (void)deleteContext:(void (^)(NSError *error))errorBlock
+- (void)deleteContext
 {
     // delete all the caches
     [NSFetchedResultsController deleteCacheWithName:nil];
@@ -238,24 +241,16 @@
                                                   object:self.managedObjectContext];
     
     NSError *error;
-    if (![self.persistentStoreCoordinator removePersistentStore:self.persistentStore error:&error] && errorBlock) {
-        errorBlock(error);
+    if (![self.persistentStoreCoordinator removePersistentStore:self.persistentStore error:&error]) {
+        [self handleError:error];
     }
     
-    if (![[NSFileManager defaultManager] removeItemAtPath:[self persistentStore].URL.path error:&error] && errorBlock) {
-        errorBlock(error);
+    if (![[NSFileManager defaultManager] removeItemAtPath:[self persistentStore].URL.path error:&error]) {
+        [self handleError:error];
     }
     
     _persistentStoreCoordinator = nil;
     _managedObjectContext = nil;
 }
-
-- (void)deleteContext
-{
-    [self deleteContext:^(NSError *error) {
-        NSLog(@"Error deleting the DB from disk: %@", error.localizedDescription);
-    }];
-}
-
 
 @end

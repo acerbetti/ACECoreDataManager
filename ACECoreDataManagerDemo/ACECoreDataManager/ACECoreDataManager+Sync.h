@@ -10,6 +10,7 @@
 
 @interface ACECoreDataManager (Sync)
 
-- (void)syncEntityName:(NSString *)entityName withDataFromArray:(NSArray *)dataArray;
+- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
+- (void)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 
 @end

@@ -7,10 +7,18 @@
 //
 
 #import "ACECoreDataManager+Sync.h"
+#import "ACECoreDataManager+Operation.h"
 
 @implementation ACECoreDataManager (Sync)
 
-- (void)syncEntityName:(NSString *)entityName withDataFromArray:(NSArray *)dataArray
+- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
+{
+    for (NSDictionary *dictionary in dataArray) {
+        [self insertDictionary:dictionary inEntityName:entityName];
+    }
+}
+
+- (void)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
     // get the entity, and the index
     NSEntityDescription *entity = [self entityWithName:entityName];

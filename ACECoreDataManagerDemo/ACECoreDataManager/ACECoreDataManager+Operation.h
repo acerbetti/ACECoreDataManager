@@ -14,8 +14,10 @@ typedef id (^DataBlock)(NSString *key, NSAttributeType attributeType);
 
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName withDataBlock:(DataBlock)block;
 - (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName;
-- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 
-- (void)removeAllFromEntityName:(NSString *)entityName error:(NSError **)error;
+- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor;
+- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors;
+
+- (void)removeAllFromEntityName:(NSString *)entityName;
 
 @end

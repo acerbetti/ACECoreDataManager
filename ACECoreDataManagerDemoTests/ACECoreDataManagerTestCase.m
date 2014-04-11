@@ -30,18 +30,28 @@
 - (void)tearDown
 {
     // remove all the test objects
-    [[ACECoreDataManager sharedManager] removeAllFromEntityName:kEntityNameTest error:nil];
+    [[ACECoreDataManager sharedManager] removeAllFromEntityName:kEntityNameTest];
     [super tearDown];
 }
 
 - (void)testAddOneObject
 {
     NSDictionary *testDictionary = [self dictionaryWithId:0];
-    NSManagedObject *object = [[ACECoreDataManager sharedManager] insertDictionary:testDictionary
-                                                                      inEntityName:kEntityNameTest];
+    NSManagedObject *object = [[ACECoreDataManager sharedManager] insertDictionary:testDictionary inEntityName:kEntityNameTest];
     
     XCTAssertEqualObjects( [testDictionary valueForKey:@"uid"], [object valueForKey:@"uid"], @"Key doesn't match");
     XCTAssertEqualObjects( [testDictionary valueForKey:@"name"], [object valueForKey:@"name"], @"Name doesn't match");
+}
+
+- (void)testAddMultipleObjects
+{
+    NSArray *dictionaries = @[ [self dictionaryWithId:1], [self dictionaryWithId:2], [self dictionaryWithId:3] ];
+    [[ACECoreDataManager sharedManager] insertArrayOfDictionary:dictionaries inEntityName:kEntityNameTest];
+    
+    NSArray *objects = [[ACECoreDataManager sharedManager] fetchAllObjectsForInEntity:kEntityNameTest
+                                                                       sortDescriptor:nil];
+    
+    XCTAssertEqual(dictionaries.count, objects.count, @"Object count mismatch");
 }
 
 

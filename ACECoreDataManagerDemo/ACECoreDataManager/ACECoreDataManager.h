@@ -30,6 +30,9 @@
 - (NSURL *)modelURLForManager:(ACECoreDataManager *)manager;
 - (NSURL *)storeURLForManager:(ACECoreDataManager *)manager;
 
+@optional
+- (void)coreDataManager:(ACECoreDataManager *)manager didFailOperationWithError:(NSError *)error;
+
 @end
 
 #pragma mark -
@@ -43,13 +46,10 @@
 
 // helpers
 - (NSEntityDescription *)entityWithName:(NSString *)entityName;
+- (void)handleError:(NSError *)error;
 
-// save
-- (void)saveContext:(void (^)(NSError *error))errorBlock;
+// context
 - (void)saveContext;
-
-// delete
-- (void)deleteContext:(void (^)(NSError *error))errorBlock;
 - (void)deleteContext;
 
 // singleton
