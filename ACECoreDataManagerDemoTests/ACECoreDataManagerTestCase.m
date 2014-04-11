@@ -54,6 +54,18 @@
     XCTAssertEqual(dictionaries.count, objects.count, @"Object count mismatch");
 }
 
+- (void)testFetchOneObject
+{
+    NSArray *dictionaries = @[ [self dictionaryWithId:1], [self dictionaryWithId:2], [self dictionaryWithId:3] ];
+    [[ACECoreDataManager sharedManager] insertArrayOfDictionary:dictionaries inEntityName:kEntityNameTest];
+    
+    NSManagedObject *object = [[ACECoreDataManager sharedManager] fetchObjectInEntity:kEntityNameTest
+                                                                         withUniqueId:[@(2) stringValue]];
+    
+    NSDictionary *testDictionary = dictionaries[1];
+    XCTAssertEqualObjects( [testDictionary valueForKey:@"name"], [object valueForKey:@"name"], @"Name doesn't match");
+}
+
 
 #pragma mark - Helpers
 

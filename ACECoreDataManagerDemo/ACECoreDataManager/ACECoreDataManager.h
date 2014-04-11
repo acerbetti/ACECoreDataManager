@@ -46,6 +46,7 @@
 
 // helpers
 - (NSEntityDescription *)entityWithName:(NSString *)entityName;
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
 - (void)handleError:(NSError *)error;
 
 // context

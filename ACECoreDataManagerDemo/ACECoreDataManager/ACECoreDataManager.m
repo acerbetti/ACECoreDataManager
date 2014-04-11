@@ -196,6 +196,20 @@
                        inManagedObjectContext:self.managedObjectContext];
 }
 
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
+{
+    // looking for the index attribute
+    NSDictionary *destAttributes = [entity attributesByName];
+    for (NSString *key in destAttributes) {
+        
+        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
+        if (destAttr.isIndexed) {
+            return destAttr;
+        }
+    }
+    return nil;
+}
+
 
 #pragma mark - Save
 
