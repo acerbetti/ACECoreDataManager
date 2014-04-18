@@ -1,4 +1,4 @@
-// ACECoreDataManager.h
+// ACECoreDataManager+Sync.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,43 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "ACECoreDataManager.h"
 
-@class ACECoreDataManager;
+@interface ACECoreDataManager (Sync)
 
-@protocol ACECoreDataDelegate <NSObject>
+- (NSSet *)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 
-@required
-- (NSURL *)modelURLForManager:(ACECoreDataManager *)manager;
-- (NSURL *)storeURLForManager:(ACECoreDataManager *)manager;
-
-@optional
-- (void)coreDataManager:(ACECoreDataManager *)manager didFailOperationWithError:(NSError *)error;
-
-@end
-
-#pragma mark -
-
-@interface ACECoreDataManager : NSObject
-
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
-@property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
-
-// helpers
-- (NSEntityDescription *)entityWithName:(NSString *)entityName;
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
-- (void)handleError:(NSError *)error;
-
-// context
-- (void)saveContext;
-- (void)deleteContext;
-
-// atomic updates
-- (void)beginUpdates;
-- (void)endUpdates;
-
-// singleton
-+ (instancetype)sharedManager;
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(NSSet *)objects inEntityName:(NSString *)entityName;
 
 @end

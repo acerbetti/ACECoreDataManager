@@ -22,13 +22,35 @@
 
 #import "ACECoreDataManager.h"
 
-typedef id (^DataBlock)(NSString *key, NSAttributeType attributeType);
+typedef id (^AttributesBlock)(NSString *key, NSAttributeType attributeType);
+typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity);
 
 @interface ACECoreDataManager (Operation)
 
-- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName withDataBlock:(DataBlock)block;
+// insert
+- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
+                       withAttibutesBlock:(AttributesBlock)attibutesBlock
+                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
+
+// insert with default blocks
 - (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName;
 
+
+
+// update
+- (NSManagedObject *)updateObject:(NSManagedObject *)object
+               withAttibutesBlock:(AttributesBlock)attibutesBlock
+            andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
+
+// update with teh default blocks
+- (NSManagedObject *)updateObject:(NSManagedObject *)object withDictionary:(NSDictionary *)dictionary;
+
+// insert or update with the default blocks
+- (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary;
+
+
+
+// fetch
 - (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor;
 - (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors;
 - (NSManagedObject *)fetchObjectInEntity:(NSString *)entityName withUniqueId:(id)uniqueId;

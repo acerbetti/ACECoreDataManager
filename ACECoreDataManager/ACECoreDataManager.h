@@ -1,4 +1,4 @@
-// ACECoreDataManager+Sync.h
+// ACECoreDataManager.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,11 +20,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ACECoreDataManager.h"
+#import <Foundation/Foundation.h>
 
-@interface ACECoreDataManager (Sync)
+@class ACECoreDataManager;
 
-- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
-- (void)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
+@protocol ACECoreDataDelegate <NSObject>
+
+@required
+- (NSURL *)modelURLForManager:(ACECoreDataManager *)manager;
+- (NSURL *)storeURLForManager:(ACECoreDataManager *)manager;
+
+@optional
+- (void)coreDataManager:(ACECoreDataManager *)manager didFailOperationWithError:(NSError *)error;
+
+@end
+
+#pragma mark -
+
+@interface ACECoreDataManager : NSObject
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+@property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
+
+// helpers
+- (NSEntityDescription *)entityWithName:(NSString *)entityName;
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
+- (void)handleError:(NSError *)error;
+
+// context
+- (void)saveContext;
+- (void)deleteContext;
+
+// atomic updates
+- (void)beginUpdates;
+- (void)endUpdates;
+
+// temporary context
+- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock;
+
+// singleton
++ (instancetype)sharedManager;
 
 @end

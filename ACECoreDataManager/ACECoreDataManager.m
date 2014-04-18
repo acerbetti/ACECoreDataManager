@@ -265,6 +265,18 @@
     _managedObjectContext = nil;
 }
 
+- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
+{
+    NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    temporaryContext.parentContext = self.managedObjectContext;
+    
+    [temporaryContext performBlock:^{
+        if (actionBlock != nil) {
+            actionBlock(temporaryContext);
+        }
+    }];
+}
+
 
 #pragma mark - Atomic Updates
 

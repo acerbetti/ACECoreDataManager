@@ -25,33 +25,59 @@
 
 @implementation ACECoreDataManager (Sync)
 
-- (void)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
+#pragma mark - Insert Array
+
+- (NSSet *)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
     [self beginUpdates];
     
+    NSMutableSet *set = [NSMutableSet set];
     for (NSDictionary *dictionary in dataArray) {
-        [self insertDictionary:dictionary inEntityName:entityName];
+        [set addObject:[self insertDictionary:dictionary inEntityName:entityName]];
     }
     
     [self endUpdates];
+    
+    return [set copy];
 }
 
-- (void)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
+
+#pragma mark - Upsert Array
+
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
-    [self beginUpdates];
-    
     // get the entity, and the index
     NSEntityDescription *entity = [self entityWithName:entityName];
     NSString *indexName = [[self indexedAttributeForEntity:entity] name];
     
-    // sort the data array based on the index
-    NSArray *sortedArray = [self sortArray:dataArray withIndex:indexName];
-    NSArray *sortedObjects = [self sortManagedObjectsForEntityName:entityName withIndex:indexName];
+    // call the main upserter
+    return [self upsertArrayOfSortedDictionary:[self sortArray:dataArray withIndex:indexName]
+                       andSortedObjects:[self sortManagedObjectsForEntityName:entityName withIndex:indexName]
+                           inEntityName:entityName];
+}
+
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(NSSet *)objects inEntityName:(NSString *)entityName
+{
+    // get the entity, and the index
+    NSEntityDescription *entity = [self entityWithName:entityName];
+    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
     
+    // call the main upserter
+    return [self upsertArrayOfSortedDictionary:[self sortArray:dataArray withIndex:indexName]
+                       andSortedObjects:[objects sortedArrayUsingDescriptors:@[ [self sortDescriptorForKey:indexName] ]]
+                                                                inEntityName:entityName];
+}
+
+- (NSSet *)upsertArrayOfSortedDictionary:(NSArray *)sortedArray andSortedObjects:(NSArray *)sortedObjects inEntityName:(NSString *)entityName
+{
     NSManagedObjectContext *context = self.managedObjectContext;
+    NSMutableSet *set = [NSMutableSet set];
+    
+    [self beginUpdates];
+    
     NSUInteger dataIndex = 0, arrayCount = sortedArray.count;
     for (NSManagedObject *object in sortedObjects) {
-    
+        
         if (dataIndex < arrayCount) {
             dataIndex++;
             
@@ -63,14 +89,21 @@
     // add the rest of the pack to core data
     for ( ; dataIndex < arrayCount; ++dataIndex) {
         NSDictionary *dataDict = sortedArray[dataIndex];
-        [self insertDictionary:dataDict inEntityName:entityName];
+        [set addObject:[self insertDictionary:dataDict inEntityName:entityName]];
     }
     
     [self endUpdates];
+    
+    return [set copy];
 }
 
 
 #pragma mark - Helpers
+
+- (NSSortDescriptor *)sortDescriptorForKey:(NSString *)indexName
+{
+    return [NSSortDescriptor sortDescriptorWithKey:indexName ascending:YES];
+}
 
 - (NSArray *)sortArray:(NSArray *)dataArray withIndex:(NSString *)indexName
 {
@@ -83,8 +116,8 @@
 
 - (NSArray *)sortManagedObjectsForEntityName:(NSString *)entityName withIndex:(NSString *)indexName
 {
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:indexName ascending:YES];
-    return [self fetchAllObjectsForInEntity:entityName sortDescriptor:sortDescriptor];
+    return [self fetchAllObjectsForInEntity:entityName
+                             sortDescriptor:[self sortDescriptorForKey:indexName]];
 }
 
 @end
