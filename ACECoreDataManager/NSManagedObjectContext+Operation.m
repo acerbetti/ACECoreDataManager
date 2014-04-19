@@ -1,4 +1,4 @@
-// ACECoreDataManager+Operation.m
+// NSManagedObjectContext+Operation.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,10 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ACECoreDataManager+Operation.h"
-#import "ACECoreDataManager+Sync.h"
+#import "NSManagedObjectContext+Operation.h"
 
-@implementation ACECoreDataManager (Operation)
+@implementation NSManagedObjectContext (Operation)
+
+#pragma mark - Entity
+
+- (NSEntityDescription *)entityWithName:(NSString *)entityName
+{
+    return [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
+}
+
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
+{
+    // looking for the index attribute
+    NSDictionary *destAttributes = [entity attributesByName];
+    for (NSString *key in destAttributes) {
+        
+        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
+        if (destAttr.isIndexed) {
+            return destAttr;
+        }
+    }
+    return nil;
+}
+
 
 #pragma mark - Insert
 
@@ -33,7 +54,7 @@
 {
     // create a new object
     __block NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName
-                                                            inManagedObjectContext:self.managedObjectContext];
+                                                                    inManagedObjectContext:self];
     
     // get the entity
     NSEntityDescription *entity = [self entityWithName:entityName];
@@ -65,20 +86,20 @@
 - (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName
 {
     return [self insertObjectInEntity:entityName
-            withAttibutesBlock:^id(NSString *key, NSAttributeType attributeType) {
-                
-                // very simple basic case
-                return [dictionary objectForKey:key];
-                
-            } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
-                
-                // I'm assuming everything is new here, go with the default insert
-                NSSet *set = [self insertArrayOfDictionary:[dictionary objectForKey:key]
-                                              inEntityName:destinationEntity.name];
-                
-                // update the parent object
-                [parentObject setValue:set forKey:key];
-            }];
+                   withAttibutesBlock:^id(NSString *key, NSAttributeType attributeType) {
+                       
+                       // very simple basic case
+                       return [dictionary objectForKey:key];
+                       
+                   } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
+                       
+                       // I'm assuming everything is new here, go with the default insert
+                       NSSet *set = [self insertArrayOfDictionary:[dictionary objectForKey:key]
+                                                     inEntityName:destinationEntity.name];
+                       
+                       // update the parent object
+                       [parentObject setValue:set forKey:key];
+                   }];
 }
 
 
@@ -87,7 +108,7 @@
 - (NSManagedObject *)updateObject:(NSManagedObject *)object
                withAttibutesBlock:(AttributesBlock)attibutesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
-{    
+{
     // populate the attributes
     if (attibutesBlock != nil) {
         NSDictionary *attributes = [object.entity attributesByName];
@@ -108,7 +129,7 @@
             }
         }];
     }
-
+    
     return object;
 }
 
@@ -197,12 +218,7 @@
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
-    NSError *error;
-    NSArray *objects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (error != nil) {
-        [self handleError:error];
-    }
-    return objects;
+    return [self executeFetchRequest:fetchRequest error:nil];
 }
 
 
@@ -214,21 +230,10 @@
     [fetchRequest setEntity:[self entityWithName:entityName]];
     [fetchRequest setIncludesPropertyValues:NO];
     
-    // I want to delete all the objects together
-    [self beginUpdates];
-    
-    NSError *error;
-    NSManagedObjectContext *context = self.managedObjectContext;
-    NSArray *objects = [context executeFetchRequest:fetchRequest error:&error];
-    if (error == nil) {
-        for (NSManagedObject *object in objects) {
-            [context deleteObject:object];
-        }        
-    } else {
-        [self handleError:error];
+    NSArray *objects = [self executeFetchRequest:fetchRequest error:nil];
+    for (NSManagedObject *object in objects) {
+        [self deleteObject:object];
     }
-    
-    [self endUpdates];
 }
 
 @end

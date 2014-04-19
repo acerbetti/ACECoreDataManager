@@ -1,4 +1,4 @@
-// ACECoreDataManager+Sync.m
+// NSManagedObjectContext+Sync.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,23 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ACECoreDataManager+Sync.h"
-#import "ACECoreDataManager+Operation.h"
+#import "NSManagedObjectContext+Sync.h"
 
-@implementation ACECoreDataManager (Sync)
+@implementation NSManagedObjectContext (Sync)
 
 #pragma mark - Insert Array
 
 - (NSSet *)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
-    [self beginUpdates];
-    
     NSMutableSet *set = [NSMutableSet set];
     for (NSDictionary *dictionary in dataArray) {
         [set addObject:[self insertDictionary:dictionary inEntityName:entityName]];
     }
-    
-    [self endUpdates];
     
     return [set copy];
 }
@@ -79,7 +74,7 @@
             
         } else {
             // delete it
-            [self.managedObjectContext deleteObject:object];
+            [self deleteObject:object];
         }
     }
     
@@ -90,29 +85,6 @@
     
     // call the main upserter
     return [set copy];
-}
-
-
-#pragma mark - Helpers
-
-- (NSSortDescriptor *)sortDescriptorForKey:(NSString *)indexName
-{
-    return [NSSortDescriptor sortDescriptorWithKey:indexName ascending:YES];
-}
-
-- (NSArray *)sortArray:(NSArray *)dataArray withIndex:(NSString *)indexName
-{
-    return [dataArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        id key1 = [obj1 valueForKey:indexName];
-        id key2 = [obj2 valueForKey:indexName];
-        return [key1 compare:key2];
-    }];
-}
-
-- (NSArray *)sortManagedObjectsForEntityName:(NSString *)entityName withIndex:(NSString *)indexName
-{
-    return [self fetchAllObjectsForInEntity:entityName
-                             sortDescriptor:[self sortDescriptorForKey:indexName]];
 }
 
 @end

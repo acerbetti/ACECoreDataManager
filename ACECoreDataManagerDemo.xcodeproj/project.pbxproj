@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		801573B71901ED9E00D47C05 /* ACECoreDataManager+Operation.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B01901ED9E00D47C05 /* ACECoreDataManager+Operation.m */; };
-		801573B81901ED9E00D47C05 /* ACECoreDataManager+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B21901ED9E00D47C05 /* ACECoreDataManager+Sync.m */; };
+		801573B71901ED9E00D47C05 /* NSManagedObjectContext+Operation.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B01901ED9E00D47C05 /* NSManagedObjectContext+Operation.m */; };
+		801573B81901ED9E00D47C05 /* NSManagedObjectContext+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B21901ED9E00D47C05 /* NSManagedObjectContext+Sync.m */; };
 		801573B91901ED9E00D47C05 /* ACECoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B41901ED9E00D47C05 /* ACECoreDataManager.m */; };
 		801573BA1901ED9E00D47C05 /* ACECoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B61901ED9E00D47C05 /* ACECoreDataTableViewController.m */; };
 		80C5A6DE18F606250061B39C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6DD18F606250061B39C /* Foundation.framework */; };
@@ -42,10 +42,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		801573AF1901ED9E00D47C05 /* ACECoreDataManager+Operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ACECoreDataManager+Operation.h"; sourceTree = "<group>"; };
-		801573B01901ED9E00D47C05 /* ACECoreDataManager+Operation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ACECoreDataManager+Operation.m"; sourceTree = "<group>"; };
-		801573B11901ED9E00D47C05 /* ACECoreDataManager+Sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ACECoreDataManager+Sync.h"; sourceTree = "<group>"; };
-		801573B21901ED9E00D47C05 /* ACECoreDataManager+Sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ACECoreDataManager+Sync.m"; sourceTree = "<group>"; };
+		801573AF1901ED9E00D47C05 /* NSManagedObjectContext+Operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Operation.h"; sourceTree = "<group>"; };
+		801573B01901ED9E00D47C05 /* NSManagedObjectContext+Operation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Operation.m"; sourceTree = "<group>"; };
+		801573B11901ED9E00D47C05 /* NSManagedObjectContext+Sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Sync.h"; sourceTree = "<group>"; };
+		801573B21901ED9E00D47C05 /* NSManagedObjectContext+Sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Sync.m"; sourceTree = "<group>"; };
 		801573B31901ED9E00D47C05 /* ACECoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataManager.h; sourceTree = "<group>"; };
 		801573B41901ED9E00D47C05 /* ACECoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManager.m; sourceTree = "<group>"; };
 		801573B51901ED9E00D47C05 /* ACECoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataTableViewController.h; sourceTree = "<group>"; };
@@ -101,32 +101,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50162FB51902D24000052DF2 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				801573AF1901ED9E00D47C05 /* NSManagedObjectContext+Operation.h */,
+				801573B01901ED9E00D47C05 /* NSManagedObjectContext+Operation.m */,
+				801573B11901ED9E00D47C05 /* NSManagedObjectContext+Sync.h */,
+				801573B21901ED9E00D47C05 /* NSManagedObjectContext+Sync.m */,
+			);
+			name = Additions;
+			sourceTree = "<group>";
+		};
 		801573AE1901ED9E00D47C05 /* ACECoreDataManager */ = {
 			isa = PBXGroup;
 			children = (
-				801573BB1901EDA800D47C05 /* UI */,
-				801573AF1901ED9E00D47C05 /* ACECoreDataManager+Operation.h */,
-				801573B01901ED9E00D47C05 /* ACECoreDataManager+Operation.m */,
-				801573B11901ED9E00D47C05 /* ACECoreDataManager+Sync.h */,
-				801573B21901ED9E00D47C05 /* ACECoreDataManager+Sync.m */,
+				50162FB51902D24000052DF2 /* Additions */,
+				801573BB1901EDA800D47C05 /* UIKit */,
 				801573B31901ED9E00D47C05 /* ACECoreDataManager.h */,
 				801573B41901ED9E00D47C05 /* ACECoreDataManager.m */,
 			);
 			path = ACECoreDataManager;
 			sourceTree = SOURCE_ROOT;
 		};
-		801573BB1901EDA800D47C05 /* UI */ = {
+		801573BB1901EDA800D47C05 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
 				801573B51901ED9E00D47C05 /* ACECoreDataTableViewController.h */,
 				801573B61901ED9E00D47C05 /* ACECoreDataTableViewController.m */,
 			);
-			name = UI;
+			name = UIKit;
 			sourceTree = "<group>";
 		};
 		80C5A6D118F606250061B39C = {
 			isa = PBXGroup;
 			children = (
+				801573AE1901ED9E00D47C05 /* ACECoreDataManager */,
 				80C5A6E518F606250061B39C /* ACECoreDataManagerDemo */,
 				80C5A70B18F606250061B39C /* ACECoreDataManagerDemoTests */,
 				80C5A6DC18F606250061B39C /* Frameworks */,
@@ -158,7 +167,6 @@
 		80C5A6E518F606250061B39C /* ACECoreDataManagerDemo */ = {
 			isa = PBXGroup;
 			children = (
-				801573AE1901ED9E00D47C05 /* ACECoreDataManager */,
 				80C5A71F18F6075D0061B39C /* Controllers */,
 				80C5A6EE18F606250061B39C /* ACEAppDelegate.h */,
 				80C5A6EF18F606250061B39C /* ACEAppDelegate.m */,
@@ -311,9 +319,9 @@
 				80C5A6F918F606250061B39C /* ACEMasterViewController.m in Sources */,
 				801573BA1901ED9E00D47C05 /* ACECoreDataTableViewController.m in Sources */,
 				80C5A6F018F606250061B39C /* ACEAppDelegate.m in Sources */,
-				801573B71901ED9E00D47C05 /* ACECoreDataManager+Operation.m in Sources */,
+				801573B71901ED9E00D47C05 /* NSManagedObjectContext+Operation.m in Sources */,
 				80C5A6F618F606250061B39C /* ACECoreDataManagerDemo.xcdatamodeld in Sources */,
-				801573B81901ED9E00D47C05 /* ACECoreDataManager+Sync.m in Sources */,
+				801573B81901ED9E00D47C05 /* NSManagedObjectContext+Sync.m in Sources */,
 				80C5A6EC18F606250061B39C /* main.m in Sources */,
 				801573B91901ED9E00D47C05 /* ACECoreDataManager.m in Sources */,
 				80C5A6FC18F606250061B39C /* ACEDetailViewController.m in Sources */,

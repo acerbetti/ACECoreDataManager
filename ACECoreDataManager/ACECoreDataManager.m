@@ -189,29 +189,6 @@
 }
 
 
-#pragma mark - Helpers
-
-- (NSEntityDescription *)entityWithName:(NSString *)entityName
-{
-    return [NSEntityDescription entityForName:entityName
-                       inManagedObjectContext:self.managedObjectContext];
-}
-
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
-{
-    // looking for the index attribute
-    NSDictionary *destAttributes = [entity attributesByName];
-    for (NSString *key in destAttributes) {
-        
-        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
-        if (destAttr.isIndexed) {
-            return destAttr;
-        }
-    }
-    return nil;
-}
-
-
 #pragma mark - Context
 
 - (void)saveContext
@@ -219,10 +196,9 @@
     if ([self.managedObjectContext hasChanges]) {
         [self.managedObjectContext performBlock:^{
             
-            NSError *error = nil;
+            NSError *error;
             // save async the data in memory in the main thread
             if ([self.managedObjectContext save:&error]) {
-                
                 [self.privateWriterContext performBlock:^{
                     
                     NSError *error;
@@ -274,6 +250,9 @@
         if (actionBlock != nil) {
             actionBlock(temporaryContext);
         }
+        
+        // TODO: save the temporary context
+        [self saveContext];
     }];
 }
 

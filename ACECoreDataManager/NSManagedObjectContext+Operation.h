@@ -1,4 +1,4 @@
-// ACECoreDataManager+Operation.h
+// NSManagedObjectContext+Operation.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -25,7 +25,11 @@
 typedef id (^AttributesBlock)(NSString *key, NSAttributeType attributeType);
 typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity);
 
-@interface ACECoreDataManager (Operation)
+@interface NSManagedObjectContext (Operation)
+
+// entity
+- (NSEntityDescription *)entityWithName:(NSString *)entityName;
+- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
 
 // insert
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName

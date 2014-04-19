@@ -1,4 +1,4 @@
-// ACECoreDataManager+Sync.h
+// NSManagedObjectContext+Sync.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -22,7 +22,7 @@
 
 #import "ACECoreDataManager.h"
 
-@interface ACECoreDataManager (Sync)
+@interface NSManagedObjectContext (Sync)
 
 - (NSSet *)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 

@@ -20,7 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
+
+#import "NSManagedObjectContext+Operation.h"
+#import "NSManagedObjectContext+Sync.h"
 
 @class ACECoreDataManager;
 
@@ -42,11 +46,6 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
-
-// helpers
-- (NSEntityDescription *)entityWithName:(NSString *)entityName;
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
-- (void)handleError:(NSError *)error;
 
 // context
 - (void)saveContext;
