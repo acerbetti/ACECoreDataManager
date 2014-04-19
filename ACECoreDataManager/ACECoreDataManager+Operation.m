@@ -129,13 +129,16 @@
                
            } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
                
-               // go for the default upsert on the destination's entity
-               NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
-                                              withObjects:[object valueForKey:key]
-                                             inEntityName:destinationEntity.name];
-               
-               // update the parent object
-               [parentObject setValue:set forKey:key];
+               id value = [dictionary objectForKey:key];
+               if (value != nil) {
+                   // go for the default upsert on the destination's entity
+                   NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
+                                                  withObjects:[object valueForKey:key]
+                                                 inEntityName:destinationEntity.name];
+                   
+                   // update the parent object
+                   [parentObject setValue:set forKey:key];
+               }
            }];
 }
 

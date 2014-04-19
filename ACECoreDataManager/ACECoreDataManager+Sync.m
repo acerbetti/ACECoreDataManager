@@ -46,54 +46,49 @@
 
 - (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
-    // get the entity, and the index
-    NSEntityDescription *entity = [self entityWithName:entityName];
-    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
-    
-    // call the main upserter
-    return [self upsertArrayOfSortedDictionary:[self sortArray:dataArray withIndex:indexName]
-                       andSortedObjects:[self sortManagedObjectsForEntityName:entityName withIndex:indexName]
-                           inEntityName:entityName];
+    return [self upsertArrayOfDictionary:dataArray
+                             withObjects:[self fetchAllObjectsForInEntity:entityName sortDescriptor:nil]
+                            inEntityName:entityName];
 }
 
-- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(NSSet *)objects inEntityName:(NSString *)entityName
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(id<NSFastEnumeration>)objects inEntityName:(NSString *)entityName
 {
     // get the entity, and the index
     NSEntityDescription *entity = [self entityWithName:entityName];
     NSString *indexName = [[self indexedAttributeForEntity:entity] name];
     
-    // call the main upserter
-    return [self upsertArrayOfSortedDictionary:[self sortArray:dataArray withIndex:indexName]
-                       andSortedObjects:[objects sortedArrayUsingDescriptors:@[ [self sortDescriptorForKey:indexName] ]]
-                                                                inEntityName:entityName];
-}
-
-- (NSSet *)upsertArrayOfSortedDictionary:(NSArray *)sortedArray andSortedObjects:(NSArray *)sortedObjects inEntityName:(NSString *)entityName
-{
-    NSManagedObjectContext *context = self.managedObjectContext;
+    // return a set of objects
     NSMutableSet *set = [NSMutableSet set];
     
-    [self beginUpdates];
+    // convert the data array in a dictionary
+    NSMutableDictionary *dataMap =
+    [NSMutableDictionary dictionaryWithObjects:dataArray
+                                       forKeys:[dataArray valueForKey:indexName]];
     
-    NSUInteger dataIndex = 0, arrayCount = sortedArray.count;
-    for (NSManagedObject *object in sortedObjects) {
+    NSDictionary *dictionary;
+    for (NSManagedObject *object in objects) {
+        NSString *objectId = [object valueForKey:indexName];
+        dictionary = dataMap[objectId];
         
-        if (dataIndex < arrayCount) {
-            dataIndex++;
+        if (dictionary != nil) {
+            // the object is also part of the data, update it
+            [set addObject:[self updateObject:object withDictionary:dictionary]];
+            
+            // now remove this dictionary
+            [dataMap removeObjectForKey:objectId];
             
         } else {
-            [context deleteObject:object];
+            // delete it
+            [self.managedObjectContext deleteObject:object];
         }
     }
     
-    // add the rest of the pack to core data
-    for ( ; dataIndex < arrayCount; ++dataIndex) {
-        NSDictionary *dataDict = sortedArray[dataIndex];
-        [set addObject:[self insertDictionary:dataDict inEntityName:entityName]];
+    // insert the rest of dictionary
+    for (dictionary in dataMap.allValues) {
+        [set addObject:[self insertDictionary:dictionary inEntityName:entityName]];
     }
     
-    [self endUpdates];
-    
+    // call the main upserter
     return [set copy];
 }
 

@@ -27,6 +27,6 @@
 - (NSSet *)insertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
 
 - (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName;
-- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(NSSet *)objects inEntityName:(NSString *)entityName;
+- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(id<NSFastEnumeration>)objects inEntityName:(NSString *)entityName;
 
 @end
