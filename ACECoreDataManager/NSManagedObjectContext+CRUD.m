@@ -49,7 +49,7 @@
 #pragma mark - Insert
 
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
-                      withAttributesBlock:(AttributesBlock)attibutesBlock
+                      withAttributesBlock:(AttributesBlock)attributesBlock
                     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // create a new object
@@ -60,11 +60,11 @@
     NSEntityDescription *entity = [self entityWithName:entityName];
     
     // populate the attributes
-    if (attibutesBlock != nil) {
+    if (attributesBlock != nil) {
         NSDictionary *attributes = [entity attributesByName];
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
             
-            id value = attibutesBlock(key, attribute.attributeType);
+            id value = attributesBlock(key, attribute.attributeType);
             [object setValue:value forKey:key];
         }];
     }
@@ -107,15 +107,15 @@
 #pragma mark - Update
 
 - (NSManagedObject *)updateObject:(NSManagedObject *)object
-              withAttributesBlock:(AttributesBlock)attibutesBlock
+              withAttributesBlock:(AttributesBlock)attributesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // populate the attributes
-    if (attibutesBlock != nil) {
+    if (attributesBlock != nil) {
         NSDictionary *attributes = [object.entity attributesByName];
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
             
-            id value = attibutesBlock(key, attribute.attributeType);
+            id value = attributesBlock(key, attribute.attributeType);
             [object setValue:value forKey:key];
         }];
     }
@@ -167,6 +167,31 @@
 
 
 #pragma mark - Upsert
+
+- (NSManagedObject *)upsertObjectInEntity:(NSString *)entityName
+                      withAttributesBlock:(AttributesBlock)attributesBlock
+                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
+{
+    if (attributesBlock != nil) {
+        // get the object id
+        NSAttributeDescription *index = [self indexedAttributeForEntityName:entityName];
+        id objectId = attributesBlock(index.name, index.attributeType);
+        
+        // get the object to update
+        NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:objectId];
+        if (object != nil) {
+            return [self updateObject:object
+                  withAttributesBlock:attributesBlock
+                andRelationshipsBlock:relationshipsBlock];
+            
+        } else {
+            return [self insertObjectInEntity:entityName
+                          withAttributesBlock:attributesBlock
+                        andRelationshipsBlock:relationshipsBlock];
+        }
+    }
+    return nil;
+}
 
 - (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary
 {
