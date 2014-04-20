@@ -49,7 +49,7 @@
 #pragma mark - Insert
 
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
-                       withAttibutesBlock:(AttributesBlock)attibutesBlock
+                      withAttributesBlock:(AttributesBlock)attibutesBlock
                     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // create a new object
@@ -87,27 +87,27 @@
 - (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName
 {
     return [self insertObjectInEntity:entityName
-                   withAttibutesBlock:^id(NSString *key, NSAttributeType attributeType) {
-                       
-                       // very simple basic case
-                       return [dictionary objectForKey:key];
-                       
-                   } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
-                       
-                       // I'm assuming everything is new here, go with the default insert
-                       NSSet *set = [self insertArrayOfDictionary:[dictionary objectForKey:key]
-                                                     inEntityName:destinationEntity.name];
-                       
-                       // update the parent object
-                       [parentObject setValue:set forKey:key];
-                   }];
+                  withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
+                      
+                      // very simple basic case
+                      return [dictionary objectForKey:key];
+                      
+                  } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
+                      
+                      // I'm assuming everything is new here, go with the default insert
+                      NSSet *set = [self insertArrayOfDictionary:[dictionary objectForKey:key]
+                                                    inEntityName:destinationEntity.name];
+                      
+                      // update the parent object
+                      [parentObject setValue:set forKey:key];
+                  }];
 }
 
 
 #pragma mark - Update
 
 - (NSManagedObject *)updateObject:(NSManagedObject *)object
-               withAttibutesBlock:(AttributesBlock)attibutesBlock
+              withAttributesBlock:(AttributesBlock)attibutesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // populate the attributes
@@ -138,31 +138,31 @@
 - (NSManagedObject *)updateObject:(NSManagedObject *)object withDictionary:(NSDictionary *)dictionary
 {
     return [self updateObject:object
-           withAttibutesBlock:^id(NSString *key, NSAttributeType attributeType) {
-               
-               // update only the existing keys
-               id value = [dictionary objectForKey:key];
-               if (value != nil) {
-                   return value;
-                   
-               } else {
-                   // the key is not part of the dictionary, pass the old value
-                   return [object valueForKey:key];
-               }
-               
-           } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
-               
-               id value = [dictionary objectForKey:key];
-               if (value != nil) {
-                   // go for the default upsert on the destination's entity
-                   NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
-                                                  withObjects:[object valueForKey:key]
-                                                 inEntityName:destinationEntity.name];
-                   
-                   // update the parent object
-                   [parentObject setValue:set forKey:key];
-               }
-           }];
+          withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
+              
+              // update only the existing keys
+              id value = [dictionary objectForKey:key];
+              if (value != nil) {
+                  return value;
+                  
+              } else {
+                  // the key is not part of the dictionary, pass the old value
+                  return [object valueForKey:key];
+              }
+              
+          } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
+              
+              id value = [dictionary objectForKey:key];
+              if (value != nil) {
+                  // go for the default upsert on the destination's entity
+                  NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
+                                                 withObjects:[object valueForKey:key]
+                                                inEntityName:destinationEntity.name];
+                  
+                  // update the parent object
+                  [parentObject setValue:set forKey:key];
+              }
+          }];
 }
 
 
