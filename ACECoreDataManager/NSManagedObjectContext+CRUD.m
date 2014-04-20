@@ -63,6 +63,7 @@
     if (attibutesBlock != nil) {
         NSDictionary *attributes = [entity attributesByName];
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
+            
             id value = attibutesBlock(key, attribute.attributeType);
             [object setValue:value forKey:key];
         }];
@@ -113,6 +114,7 @@
     if (attibutesBlock != nil) {
         NSDictionary *attributes = [object.entity attributesByName];
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
+            
             id value = attibutesBlock(key, attribute.attributeType);
             [object setValue:value forKey:key];
         }];
@@ -163,13 +165,16 @@
            }];
 }
 
+
+#pragma mark - Upsert
+
 - (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary
 {
     // get the entity and the index
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
     
     // get the object to update
-    NSManagedObject *object = [self fetchObjectInEntity:entityName withUniqueId:dictionary[indexName]];
+    NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:dictionary[indexName]];
     if (object != nil) {
         return [self updateObject:object withDictionary:dictionary];
         
@@ -179,7 +184,13 @@
 }
 
 
-#pragma mark - Remove
+#pragma mark - Delete
+
+- (void)deleteObjectWithId:(id)objectId inEntityName:(NSString *)entityName
+{
+    NSManagedObject *managedObject = [self fetchObjectForEntityName:entityName withUniqueId:objectId];
+    [self deleteObject:managedObject];
+}
 
 - (void)deleteAllObjectsInEntityName:(NSString *)entityName
 {

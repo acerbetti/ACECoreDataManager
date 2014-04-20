@@ -24,17 +24,17 @@
 
 @implementation NSManagedObjectContext (Fetch)
 
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor
 {
-    return [self fetchAllObjectsForInEntity:entityName sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil];
+    return [self fetchAllObjectsForEntityName:entityName sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil];
 }
 
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors
 {
-    return [self fetchAllObjectsForInEntity:entityName withPredicate:nil sortDescriptors:sortDescriptors];
+    return [self fetchAllObjectsForEntityName:entityName withPredicate:nil sortDescriptors:sortDescriptors];
 }
 
-- (NSManagedObject *)fetchObjectInEntity:(NSString *)entityName withUniqueId:(id)uniqueId
+- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName withUniqueId:(id)uniqueId
 {
     // find the index name
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
@@ -42,7 +42,7 @@
     
     // build the predicate
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, uniqueId];
-    NSArray *results = [self fetchAllObjectsForInEntity:entityName withPredicate:predicate sortDescriptors:nil];
+    NSArray *results = [self fetchAllObjectsForEntityName:entityName withPredicate:predicate sortDescriptors:nil];
     if (results.count == 1) {
         return [results lastObject];
     }
@@ -52,7 +52,7 @@
 
 #pragma mark - Helper
 
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName withPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)sortDescriptors
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName withPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)sortDescriptors
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[self entityWithName:entityName]];

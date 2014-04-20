@@ -24,9 +24,9 @@
 
 @interface NSManagedObjectContext (Fetch)
 
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor;
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors;
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor;
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors;
 
-- (NSManagedObject *)fetchObjectInEntity:(NSString *)entityName withUniqueId:(id)uniqueId;
+- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName withUniqueId:(id)uniqueId;
 
 @end

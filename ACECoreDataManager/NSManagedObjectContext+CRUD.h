@@ -88,6 +88,7 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 /// @name Delete Helpers
 ///-----------------------------------------------------------
 
+- (void)deleteObjectWithId:(id)objectId inEntityName:(NSString *)entityName;
 - (void)deleteAllObjectsInEntityName:(NSString *)entityName;
 
 @end

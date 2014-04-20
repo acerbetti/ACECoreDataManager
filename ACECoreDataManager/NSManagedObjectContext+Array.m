@@ -42,7 +42,7 @@
 - (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
     return [self upsertArrayOfDictionary:dataArray
-                             withObjects:[self fetchAllObjectsForInEntity:entityName sortDescriptor:nil]
+                             withObjects:[self fetchAllObjectsForEntityName:entityName sortDescriptor:nil]
                             inEntityName:entityName];
 }
 
