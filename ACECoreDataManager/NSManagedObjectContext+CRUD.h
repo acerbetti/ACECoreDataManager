@@ -1,4 +1,4 @@
-// NSManagedObjectContext+Operation.h
+// NSManagedObjectContext+CRUD.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -25,13 +25,32 @@
 typedef id (^AttributesBlock)(NSString *key, NSAttributeType attributeType);
 typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity);
 
-@interface NSManagedObjectContext (Operation)
+@interface NSManagedObjectContext (CRUD)
 
-// entity
+///-----------------------------------------------------------
+/// @name Entity Descriptions Helpers
+///-----------------------------------------------------------
+
+/**
+ Shortcut to return the entity description from a string
+ 
+ @param entityName The name of the entity.
+ */
 - (NSEntityDescription *)entityWithName:(NSString *)entityName;
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity;
 
-// insert
+/**
+ Returns the attribute marked as index for the selected entity
+ 
+ @param entityName The name of the entity.
+ */
+- (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName;
+
+
+
+///-----------------------------------------------------------
+/// @name Insert Helpers
+///-----------------------------------------------------------
+
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
                        withAttibutesBlock:(AttributesBlock)attibutesBlock
                     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
@@ -41,7 +60,11 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 
 
 
-// update
+
+///-----------------------------------------------------------
+/// @name Update Helpers
+///-----------------------------------------------------------
+
 - (NSManagedObject *)updateObject:(NSManagedObject *)object
                withAttibutesBlock:(AttributesBlock)attibutesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
@@ -49,16 +72,22 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 // update with teh default blocks
 - (NSManagedObject *)updateObject:(NSManagedObject *)object withDictionary:(NSDictionary *)dictionary;
 
-// insert or update with the default blocks
+
+
+
+///-----------------------------------------------------------
+/// @name Upsert Helpers
+///-----------------------------------------------------------
+
 - (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary;
 
 
 
-// fetch
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor;
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors;
-- (NSManagedObject *)fetchObjectInEntity:(NSString *)entityName withUniqueId:(id)uniqueId;
 
-- (void)removeAllFromEntityName:(NSString *)entityName;
+///-----------------------------------------------------------
+/// @name Delete Helpers
+///-----------------------------------------------------------
+
+- (void)deleteAllObjectsInEntityName:(NSString *)entityName;
 
 @end

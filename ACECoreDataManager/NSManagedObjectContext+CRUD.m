@@ -1,4 +1,4 @@
-// NSManagedObjectContext+Operation.m
+// NSManagedObjectContext+CRUD.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSManagedObjectContext+Operation.h"
+#import "NSManagedObjectContext+CRUD.h"
 
-@implementation NSManagedObjectContext (Operation)
+@implementation NSManagedObjectContext (CRUD)
 
 #pragma mark - Entity
 
@@ -31,10 +31,10 @@
     return [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
 }
 
-- (NSAttributeDescription *)indexedAttributeForEntity:(NSEntityDescription *)entity
+- (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName
 {
     // looking for the index attribute
-    NSDictionary *destAttributes = [entity attributesByName];
+    NSDictionary *destAttributes = [[self entityWithName:entityName] attributesByName];
     for (NSString *key in destAttributes) {
         
         NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
@@ -166,8 +166,7 @@
 - (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary
 {
     // get the entity and the index
-    NSEntityDescription *entity = [self entityWithName:entityName];
-    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
+    NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
     
     // get the object to update
     NSManagedObject *object = [self fetchObjectInEntity:entityName withUniqueId:dictionary[indexName]];
@@ -180,51 +179,9 @@
 }
 
 
-#pragma mark - Fetch
-
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor
-{
-    return [self fetchAllObjectsForInEntity:entityName sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil];
-}
-
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors
-{
-    return [self fetchAllObjectsForInEntity:entityName withPredicate:nil sortDescriptors:sortDescriptors];
-}
-
-- (NSManagedObject *)fetchObjectInEntity:(NSString *)entityName withUniqueId:(id)uniqueId
-{
-    // find the index name
-    NSEntityDescription *entity = [self entityWithName:entityName];
-    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
-    NSString *predicateFormat = [NSString stringWithFormat:@"%@ == %%@", indexName];
-    
-    // build the predicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, uniqueId];
-    NSArray *results = [self fetchAllObjectsForInEntity:entityName withPredicate:predicate sortDescriptors:nil];
-    if (results.count == 1) {
-        return [results lastObject];
-    }
-    return nil;
-}
-
-
-#pragma mark - Fetch Helper
-
-- (NSArray *)fetchAllObjectsForInEntity:(NSString *)entityName withPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)sortDescriptors
-{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[self entityWithName:entityName]];
-    [fetchRequest setPredicate:predicate];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    return [self executeFetchRequest:fetchRequest error:nil];
-}
-
-
 #pragma mark - Remove
 
-- (void)removeAllFromEntityName:(NSString *)entityName
+- (void)deleteAllObjectsInEntityName:(NSString *)entityName
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[self entityWithName:entityName]];

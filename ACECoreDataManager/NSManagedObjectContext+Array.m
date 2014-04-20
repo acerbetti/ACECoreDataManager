@@ -1,4 +1,4 @@
-// NSManagedObjectContext+Sync.m
+// NSManagedObjectContext+Array.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSManagedObjectContext+Sync.h"
+#import "NSManagedObjectContext+Array.h"
 
-@implementation NSManagedObjectContext (Sync)
+@implementation NSManagedObjectContext (Array)
 
 #pragma mark - Insert Array
 
@@ -49,8 +49,7 @@
 - (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray withObjects:(id<NSFastEnumeration>)objects inEntityName:(NSString *)entityName
 {
     // get the entity, and the index
-    NSEntityDescription *entity = [self entityWithName:entityName];
-    NSString *indexName = [[self indexedAttributeForEntity:entity] name];
+    NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
     
     // return a set of objects
     NSMutableSet *set = [NSMutableSet set];
