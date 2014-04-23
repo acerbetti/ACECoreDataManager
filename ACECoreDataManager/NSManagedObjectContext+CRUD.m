@@ -106,63 +106,87 @@
 
 #pragma mark - Update
 
+- (NSManagedObject *)safeObjectFromObject:(NSManagedObject *)object
+{
+    if (object.managedObjectContext != self) {
+        
+        // first, make sure is not temporary
+        if ([object.managedObjectContext obtainPermanentIDsForObjects:@[object] error:nil]) {
+            
+            // second, load the object in the current context
+            return [self existingObjectWithID:object.objectID error:nil];
+        }
+    }
+    return object;
+}
+
 - (NSManagedObject *)updateObject:(NSManagedObject *)object
               withAttributesBlock:(AttributesBlock)attributesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
-    // populate the attributes
-    if (attributesBlock != nil) {
-        NSDictionary *attributes = [object.entity attributesByName];
-        [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
-            
-            id value = attributesBlock(key, attribute.attributeType);
-            [object setValue:value forKey:key];
-        }];
+    // make sure we are using the object in the same context
+    object = [self safeObjectFromObject:object];
+    if (object != nil) {
+        
+        // populate the attributes
+        if (attributesBlock != nil) {
+            NSDictionary *attributes = [object.entity attributesByName];
+            [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
+                
+                id value = attributesBlock(key, attribute.attributeType);
+                [object setValue:value forKey:key];
+            }];
+        }
+        
+        // populate the relationships
+        if (relationshipsBlock != nil) {
+            NSDictionary *relationships = [object.entity relationshipsByName];
+            [relationships enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSRelationshipDescription *relationship, BOOL *stop) {
+                
+                // I care only about the to many relationship, since core data will fix the inverse
+                if (relationship.isToMany) {
+                    relationshipsBlock(key, object, relationship.destinationEntity);
+                }
+            }];
+        }
     }
-    
-    // populate the relationships
-    if (relationshipsBlock != nil) {
-        NSDictionary *relationships = [object.entity relationshipsByName];
-        [relationships enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSRelationshipDescription *relationship, BOOL *stop) {
-            
-            // I care only about the to many relationship, since core data will fix the inverse
-            if (relationship.isToMany) {
-                relationshipsBlock(key, object, relationship.destinationEntity);
-            }
-        }];
-    }
-    
     return object;
 }
 
 - (NSManagedObject *)updateObject:(NSManagedObject *)object withDictionary:(NSDictionary *)dictionary
 {
-    return [self updateObject:object
-          withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
-              
-              // update only the existing keys
-              id value = [dictionary objectForKey:key];
-              if (value != nil) {
-                  return value;
+    // make sure we are using the object in the same context
+    object = [self safeObjectFromObject:object];
+    if (object != nil) {
+        
+        return [self updateObject:object
+              withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
                   
-              } else {
-                  // the key is not part of the dictionary, pass the old value
-                  return [object valueForKey:key];
-              }
-              
-          } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
-              
-              id value = [dictionary objectForKey:key];
-              if (value != nil) {
-                  // go for the default upsert on the destination's entity
-                  NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
-                                                 withObjects:[object valueForKey:key]
-                                                inEntityName:destinationEntity.name];
+                  // update only the existing keys
+                  id value = [dictionary objectForKey:key];
+                  if (value != nil) {
+                      return value;
+                      
+                  } else {
+                      // the key is not part of the dictionary, pass the old value
+                      return [object valueForKey:key];
+                  }
                   
-                  // update the parent object
-                  [parentObject setValue:set forKey:key];
-              }
-          }];
+              } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity) {
+                  
+                  id value = [dictionary objectForKey:key];
+                  if (value != nil) {
+                      // go for the default upsert on the destination's entity
+                      NSSet *set = [self upsertArrayOfDictionary:[dictionary objectForKey:key]
+                                                     withObjects:[object valueForKey:key]
+                                                    inEntityName:destinationEntity.name];
+                      
+                      // update the parent object
+                      [parentObject setValue:set forKey:key];
+                  }
+              }];
+    }
+    return object;
 }
 
 
@@ -178,7 +202,7 @@
         id objectId = attributesBlock(index.name, index.attributeType);
         
         // get the object to update
-        NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:objectId];
+        NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:objectId error:nil];
         if (object != nil) {
             return [self updateObject:object
                   withAttributesBlock:attributesBlock
@@ -199,7 +223,7 @@
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
     
     // get the object to update
-    NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:dictionary[indexName]];
+    NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:dictionary[indexName] error:nil];
     if (object != nil) {
         return [self updateObject:object withDictionary:dictionary];
         
@@ -213,7 +237,7 @@
 
 - (void)deleteObjectWithId:(id)objectId inEntityName:(NSString *)entityName
 {
-    NSManagedObject *managedObject = [self fetchObjectForEntityName:entityName withUniqueId:objectId];
+    NSManagedObject *managedObject = [self fetchObjectForEntityName:entityName withUniqueId:objectId error:nil];
     [self deleteObject:managedObject];
 }
 

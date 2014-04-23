@@ -111,6 +111,11 @@
                                                          name:NSManagedObjectContextObjectsDidChangeNotification
                                                        object:_managedObjectContext];
             
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(contextDidSave:)
+                                                         name:NSManagedObjectContextDidSaveNotification
+                                                       object:nil];
+            
             if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f) {
                 // http://www.cocoanetics.com/2012/07/multi-context-coredata/
                 _privateWriterContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
@@ -188,8 +193,50 @@
     }
 }
 
+- (void)contextDidSave:(NSNotification *)notification
+{
+    // propagate the changes to the parent context
+    NSManagedObjectContext *notificationContext = notification.object;
+    NSManagedObjectContext *parentContext = notificationContext.parentContext;
+    
+    [parentContext performBlock:^{
+        [parentContext mergeChangesFromContextDidSaveNotification:notification];
+        
+        NSError *error;
+        if (![parentContext save:&error]) {
+            // make sure the handle error is executed on the main thread
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self handleError:error];
+            });
+        }
+    }];
+}
+
 
 #pragma mark - Context
+
+- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
+{
+    if (actionBlock != nil) {
+        NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        temporaryContext.parentContext = self.managedObjectContext;
+        
+        [temporaryContext performBlock:^{
+            actionBlock(temporaryContext);
+            
+            // save the temporary context
+            NSError *error;
+            if ([temporaryContext hasChanges]) {
+                if (![temporaryContext save:&error]) {
+                    // make sure the handle error is executed on the main thread
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self handleError:error];
+                    });
+                }
+            }
+        }];
+    }
+}
 
 - (void)saveContext
 {
@@ -197,18 +244,7 @@
         [self.managedObjectContext performBlock:^{
             
             NSError *error;
-            // save async the data in memory in the main thread
-            if ([self.managedObjectContext save:&error]) {
-                [self.privateWriterContext performBlock:^{
-                    
-                    NSError *error;
-                    // save parent to disk asynchronously
-                    if (![self.privateWriterContext save:&error]) {
-                        [self handleError:error];
-                    }
-                }];
-                
-            } else {
+            if (![self.managedObjectContext save:&error]) {
                 [self handleError:error];
             }
         }];
@@ -228,6 +264,10 @@
                                                     name:NSManagedObjectContextObjectsDidChangeNotification
                                                   object:self.managedObjectContext];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSManagedObjectContextDidSaveNotification
+                                                  object:nil];
+    
     NSError *error;
     if (![self.persistentStoreCoordinator removePersistentStore:self.persistentStore error:&error]) {
         [self handleError:error];
@@ -239,21 +279,6 @@
     
     _persistentStoreCoordinator = nil;
     _managedObjectContext = nil;
-}
-
-- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
-{
-    NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    temporaryContext.parentContext = self.managedObjectContext;
-    
-    [temporaryContext performBlock:^{
-        if (actionBlock != nil) {
-            actionBlock(temporaryContext);
-        }
-        
-        // TODO: save the temporary context
-        [self saveContext];
-    }];
 }
 
 

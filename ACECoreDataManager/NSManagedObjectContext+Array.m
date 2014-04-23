@@ -42,7 +42,7 @@
 - (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray inEntityName:(NSString *)entityName
 {
     return [self upsertArrayOfDictionary:dataArray
-                             withObjects:[self fetchAllObjectsForEntityName:entityName sortDescriptor:nil]
+                             withObjects:[self fetchAllObjectsForEntityName:entityName sortDescriptor:nil error:nil]
                             inEntityName:entityName];
 }
 
@@ -50,40 +50,51 @@
 {
     // get the entity, and the index
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
-    
-    // return a set of objects
-    NSMutableSet *set = [NSMutableSet set];
-    
-    // convert the data array in a dictionary
-    NSMutableDictionary *dataMap =
-    [NSMutableDictionary dictionaryWithObjects:dataArray
-                                       forKeys:[dataArray valueForKey:indexName]];
-    
-    NSDictionary *dictionary;
-    for (NSManagedObject *object in objects) {
-        NSString *objectId = [object valueForKey:indexName];
-        dictionary = dataMap[objectId];
+    if (indexName == nil) {
         
-        if (dictionary != nil) {
-            // the object is also part of the data, update it
-            [set addObject:[self updateObject:object withDictionary:dictionary]];
-            
-            // now remove this dictionary
-            [dataMap removeObjectForKey:objectId];
-            
-        } else {
-            // delete it
+        // the database doesn't have an index, delete all the previous objects
+        for (NSManagedObject *object in objects) {
             [self deleteObject:object];
         }
+        
+        // then insert brand new objects
+        return [self insertArrayOfDictionary:dataArray inEntityName:entityName];
+        
+    } else {
+        // return a set of objects
+        NSMutableSet *set = [NSMutableSet set];
+        
+        // convert the data array in a dictionary
+        NSMutableDictionary *dataMap =
+        [NSMutableDictionary dictionaryWithObjects:dataArray
+                                           forKeys:[dataArray valueForKey:indexName]];
+        
+        NSDictionary *dictionary;
+        for (NSManagedObject *object in objects) {
+            NSString *objectId = [object valueForKey:indexName];
+            dictionary = dataMap[objectId];
+            
+            if (dictionary != nil) {
+                // the object is also part of the data, update it
+                [set addObject:[self updateObject:object withDictionary:dictionary]];
+                
+                // now remove this dictionary
+                [dataMap removeObjectForKey:objectId];
+                
+            } else {
+                // delete it
+                [self deleteObject:object];
+            }
+        }
+        
+        // insert the rest of dictionary
+        for (dictionary in dataMap.allValues) {
+            [set addObject:[self insertDictionary:dictionary inEntityName:entityName]];
+        }
+        
+        // call the main upserter
+        return [set copy];
     }
-    
-    // insert the rest of dictionary
-    for (dictionary in dataMap.allValues) {
-        [set addObject:[self insertDictionary:dictionary inEntityName:entityName]];
-    }
-    
-    // call the main upserter
-    return [set copy];
 }
 
 @end

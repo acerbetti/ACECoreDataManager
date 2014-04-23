@@ -24,17 +24,28 @@
 
 @implementation NSManagedObjectContext (Fetch)
 
-- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptor:(NSSortDescriptor *)sortDescriptor
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
+                           sortDescriptor:(NSSortDescriptor *)sortDescriptor
+                                    error:(NSError **)error
 {
-    return [self fetchAllObjectsForEntityName:entityName sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil];
+    return [self fetchAllObjectsForEntityName:entityName
+                              sortDescriptors:(sortDescriptor) ? @[sortDescriptor] : nil
+                                        error:(NSError **)error];
 }
 
-- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName sortDescriptors:(NSArray *)sortDescriptors
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
+                          sortDescriptors:(NSArray *)sortDescriptors
+                                    error:(NSError **)error
 {
-    return [self fetchAllObjectsForEntityName:entityName withPredicate:nil sortDescriptors:sortDescriptors];
+    return [self fetchAllObjectsForEntityName:entityName
+                                withPredicate:nil
+                              sortDescriptors:sortDescriptors
+                                        error:error];
 }
 
-- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName withUniqueId:(id)uniqueId
+- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName
+                                 withUniqueId:(id)uniqueId
+                                        error:(NSError **)error
 {
     // find the index name
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
@@ -42,7 +53,10 @@
     
     // build the predicate
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, uniqueId];
-    NSArray *results = [self fetchAllObjectsForEntityName:entityName withPredicate:predicate sortDescriptors:nil];
+    NSArray *results = [self fetchAllObjectsForEntityName:entityName
+                                            withPredicate:predicate
+                                          sortDescriptors:nil
+                                                    error:error];
     if (results.count == 1) {
         return [results lastObject];
     }
@@ -52,14 +66,17 @@
 
 #pragma mark - Helper
 
-- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName withPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)sortDescriptors
+- (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
+                            withPredicate:(NSPredicate *)predicate
+                          sortDescriptors:(NSArray *)sortDescriptors
+                                    error:(NSError **)error
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[self entityWithName:entityName]];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
-    return [self executeFetchRequest:fetchRequest error:nil];
+    return [self executeFetchRequest:fetchRequest error:error];
 }
 
 @end
