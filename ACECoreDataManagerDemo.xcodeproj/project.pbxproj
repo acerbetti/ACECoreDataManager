@@ -12,6 +12,9 @@
 		801573B81901ED9E00D47C05 /* NSManagedObjectContext+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B21901ED9E00D47C05 /* NSManagedObjectContext+JSON.m */; };
 		801573B91901ED9E00D47C05 /* ACECoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B41901ED9E00D47C05 /* ACECoreDataManager.m */; };
 		801573BA1901ED9E00D47C05 /* ACECoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 801573B61901ED9E00D47C05 /* ACECoreDataTableViewController.m */; };
+		8026792419184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 8026792119184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.m */; };
+		8026792519184F5400A56A97 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 8026792319184F5400A56A97 /* UIScrollView+SVPullToRefresh.m */; };
+		8026792919184F9200A56A97 /* ACECoreDataNetworkTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8026792819184F9200A56A97 /* ACECoreDataNetworkTableViewController.m */; };
 		80C5A6DE18F606250061B39C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6DD18F606250061B39C /* Foundation.framework */; };
 		80C5A6E018F606250061B39C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6DF18F606250061B39C /* CoreGraphics.framework */; };
 		80C5A6E218F606250061B39C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C5A6E118F606250061B39C /* UIKit.framework */; };
@@ -53,6 +56,13 @@
 		801573B41901ED9E00D47C05 /* ACECoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataManager.m; sourceTree = "<group>"; };
 		801573B51901ED9E00D47C05 /* ACECoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataTableViewController.h; sourceTree = "<group>"; };
 		801573B61901ED9E00D47C05 /* ACECoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataTableViewController.m; sourceTree = "<group>"; };
+		8026791F19184F5400A56A97 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		8026792019184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
+		8026792119184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
+		8026792219184F5400A56A97 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		8026792319184F5400A56A97 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
+		8026792719184F9200A56A97 /* ACECoreDataNetworkTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACECoreDataNetworkTableViewController.h; sourceTree = "<group>"; };
+		8026792819184F9200A56A97 /* ACECoreDataNetworkTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACECoreDataNetworkTableViewController.m; sourceTree = "<group>"; };
 		80C5A6DA18F606250061B39C /* ACECoreDataManagerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ACECoreDataManagerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80C5A6DD18F606250061B39C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		80C5A6DF18F606250061B39C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,10 +141,34 @@
 		801573BB1901EDA800D47C05 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				8026792619184F5E00A56A97 /* ACECoreDataNetworkTableViewController */,
 				801573B51901ED9E00D47C05 /* ACECoreDataTableViewController.h */,
 				801573B61901ED9E00D47C05 /* ACECoreDataTableViewController.m */,
 			);
 			name = UIKit;
+			sourceTree = "<group>";
+		};
+		8026791E19184F5400A56A97 /* SVPullToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				8026791F19184F5400A56A97 /* SVPullToRefresh.h */,
+				8026792019184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.h */,
+				8026792119184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.m */,
+				8026792219184F5400A56A97 /* UIScrollView+SVPullToRefresh.h */,
+				8026792319184F5400A56A97 /* UIScrollView+SVPullToRefresh.m */,
+			);
+			name = SVPullToRefresh;
+			path = SVPullToRefresh/SVPullToRefresh;
+			sourceTree = "<group>";
+		};
+		8026792619184F5E00A56A97 /* ACECoreDataNetworkTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				8026792719184F9200A56A97 /* ACECoreDataNetworkTableViewController.h */,
+				8026792819184F9200A56A97 /* ACECoreDataNetworkTableViewController.m */,
+			);
+			name = ACECoreDataNetworkTableViewController;
+			path = ../ACECoreDataNetworkTableViewController;
 			sourceTree = "<group>";
 		};
 		80C5A6D118F606250061B39C = {
@@ -143,6 +177,7 @@
 				801573AE1901ED9E00D47C05 /* ACECoreDataManager */,
 				80C5A6E518F606250061B39C /* ACECoreDataManagerDemo */,
 				80C5A70B18F606250061B39C /* ACECoreDataManagerDemoTests */,
+				8026791E19184F5400A56A97 /* SVPullToRefresh */,
 				80C5A6DC18F606250061B39C /* Frameworks */,
 				80C5A6DB18F606250061B39C /* Products */,
 			);
@@ -322,12 +357,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				80C5A6F918F606250061B39C /* ACEMasterViewController.m in Sources */,
+				8026792919184F9200A56A97 /* ACECoreDataNetworkTableViewController.m in Sources */,
 				801573BA1901ED9E00D47C05 /* ACECoreDataTableViewController.m in Sources */,
 				80C5A6F018F606250061B39C /* ACEAppDelegate.m in Sources */,
+				8026792419184F5400A56A97 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				801573B71901ED9E00D47C05 /* NSManagedObjectContext+CRUD.m in Sources */,
 				50162FB9190427D700052DF2 /* NSManagedObjectContext+Common.m in Sources */,
 				80C5A6F618F606250061B39C /* ACECoreDataManagerDemo.xcdatamodeld in Sources */,
 				801573B81901ED9E00D47C05 /* NSManagedObjectContext+JSON.m in Sources */,
+				8026792519184F5400A56A97 /* UIScrollView+SVPullToRefresh.m in Sources */,
 				80C5A6EC18F606250061B39C /* main.m in Sources */,
 				801573B91901ED9E00D47C05 /* ACECoreDataManager.m in Sources */,
 				80C5A6FC18F606250061B39C /* ACEDetailViewController.m in Sources */,
