@@ -72,7 +72,7 @@
         [self.delegate coreDataManager:self didFailOperationWithError:error];
         
     } else {
-        NSLog(@"Core Manager Error [%d]: %@", error.code, error.localizedDescription);
+        NSLog(@"Core Manager Error [%ld]: %@", (long)error.code, error.localizedDescription);
     }
 }
 
