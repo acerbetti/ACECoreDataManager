@@ -23,27 +23,13 @@
 #import "ACECoreDataManager.h"
 
 typedef id (^AttributesBlock)(NSString *key, NSAttributeType attributeType);
-typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity);
+
+typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
+                                   NSEntityDescription *destinationEntity, BOOL isToMany);
+
+
 
 @interface NSManagedObjectContext (CRUD)
-
-///-----------------------------------------------------------
-/// @name Entity Descriptions Helpers
-///-----------------------------------------------------------
-
-/**
- Shortcut to return the entity description from a string
- 
- @param entityName The name of the entity.
- */
-- (NSEntityDescription *)entityWithName:(NSString *)entityName;
-
-/**
- Returns the attribute marked as index for the selected entity
- 
- @param entityName The name of the entity.
- */
-- (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName;
 
 
 
@@ -54,9 +40,6 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 - (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
                       withAttributesBlock:(AttributesBlock)attributesBlock
                     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
-
-// insert with default blocks
-- (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary inEntityName:(NSString *)entityName;
 
 
 
@@ -69,9 +52,6 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
               withAttributesBlock:(AttributesBlock)attributesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
 
-// update with teh default blocks
-- (NSManagedObject *)updateObject:(NSManagedObject *)object withDictionary:(NSDictionary *)dictionary;
-
 
 
 
@@ -82,9 +62,6 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 - (NSManagedObject *)upsertObjectInEntity:(NSString *)entityName
                       withAttributesBlock:(AttributesBlock)attributesBlock
                     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
-
-- (NSManagedObject *)upsertEntityName:(NSString *)entityName withDictionary:(NSDictionary *)dictionary;
-
 
 
 

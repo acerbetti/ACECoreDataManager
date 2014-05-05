@@ -215,7 +215,7 @@
 
 #pragma mark - Context
 
-- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
+- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
 {
     if (actionBlock != nil) {
         NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
@@ -227,6 +227,7 @@
             // save the temporary context
             NSError *error;
             if ([temporaryContext hasChanges]) {
+                
                 if (![temporaryContext save:&error]) {
                     // make sure the handle error is executed on the main thread
                     dispatch_async(dispatch_get_main_queue(), ^{

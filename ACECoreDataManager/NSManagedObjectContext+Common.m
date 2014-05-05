@@ -1,4 +1,4 @@
-// NSManagedObjectContext+Fetch.m
+// NSManagedObjectContext+Common.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -20,9 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSManagedObjectContext+Fetch.h"
+#import "NSManagedObjectContext+Common.h"
 
-@implementation NSManagedObjectContext (Fetch)
+@implementation NSManagedObjectContext (Common)
+
+#pragma mark - Entity
+
+- (NSEntityDescription *)entityWithName:(NSString *)entityName
+{
+    return [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
+}
+
+- (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName
+{
+    // looking for the index attribute
+    NSDictionary *destAttributes = [[self entityWithName:entityName] attributesByName];
+    for (NSString *key in destAttributes) {
+        
+        NSAttributeDescription *destAttr = [destAttributes objectForKey:key];
+        if (destAttr.isIndexed) {
+            return destAttr;
+        }
+    }
+    return nil;
+}
+
+- (NSManagedObject *)safeObjectFromObject:(NSManagedObject *)object
+{
+    if (object.managedObjectContext != self) {
+        
+        // first, make sure is not temporary
+        if ([object.managedObjectContext obtainPermanentIDsForObjects:@[object] error:nil]) {
+            
+            // second, load the object in the current context
+            return [self existingObjectWithID:object.objectID error:nil];
+        }
+    }
+    return object;
+}
+
 
 - (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
                            sortDescriptor:(NSSortDescriptor *)sortDescriptor

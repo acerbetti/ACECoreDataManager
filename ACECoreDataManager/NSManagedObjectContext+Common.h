@@ -1,4 +1,4 @@
-// NSManagedObjectContext+Fetch.h
+// NSManagedObjectContext+Common.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
@@ -22,7 +22,28 @@
 
 #import "ACECoreDataManager.h"
 
-@interface NSManagedObjectContext (Fetch)
+@interface NSManagedObjectContext (Common)
+
+///-----------------------------------------------------------
+/// @name Entity Descriptions Helpers
+///-----------------------------------------------------------
+
+/**
+ Shortcut to return the entity description from a string
+ 
+ @param entityName The name of the entity.
+ */
+- (NSEntityDescription *)entityWithName:(NSString *)entityName;
+
+/**
+ Returns the attribute marked as index for the selected entity
+ 
+ @param entityName The name of the entity.
+ */
+- (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName;
+
+- (NSManagedObject *)safeObjectFromObject:(NSManagedObject *)object;
+
 
 - (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
                            sortDescriptor:(NSSortDescriptor *)sortDescriptor

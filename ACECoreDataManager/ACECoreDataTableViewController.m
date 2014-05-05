@@ -23,17 +23,33 @@
 #import "ACECoreDataTableViewController.h"
 #import "ACECoreDataManager.h"
 
+#import "SVPullToRefresh.h"
+
 @interface ACECoreDataTableViewController ()<NSFetchedResultsControllerDelegate>
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation ACECoreDataTableViewController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    __weak __typeof(self)weakSelf = self;
+    
+    [self.tableView addPullToRefreshWithActionHandler:^{
+        [weakSelf reloadDataFromNetwork];
+    }];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    [self.tableView triggerPullToRefresh];
     [self refreshViewMode];
 }
+
 
 #pragma mark - Private
 
@@ -52,6 +68,23 @@
         self.tableView.hidden = NO;
         self.emptyView.hidden = YES;
     }
+}
+
+
+#pragma mark - Reload
+
+- (void)reloadDataFromDB
+{
+    // rebuild the fetch query
+    self.fetchedResultsController = nil;
+    
+    // reload all the data
+    [self.tableView reloadData];
+}
+
+- (void)reloadDataFromNetwork
+{
+    [self.tableView.pullToRefreshView stopAnimating];
 }
 
 
@@ -78,6 +111,16 @@
         _emptyView = emptyLabel;
     }
     return _emptyView;
+}
+
+- (UIView *)activityIndicatorView
+{
+    return nil;
+}
+
+- (void)setEnablePullToRefresh:(BOOL)enablePullToRefresh
+{
+    self.tableView.showsPullToRefresh = enablePullToRefresh;
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -128,6 +171,7 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
+    self.isRefreshing = YES;
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -192,6 +236,7 @@
 {
     [self refreshViewMode];
     [self.tableView endUpdates];
+    self.isRefreshing = NO;
 }
 
 
@@ -233,6 +278,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath withObject:(id)object
 {
     return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    id object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self tableView:tableView didSelectRowAtIndexPath:indexPath withObject:object];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath withObject:(id)object
+{
+    
 }
 
 @end

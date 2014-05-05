@@ -30,6 +30,9 @@
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIView *emptyView;
 
+@property (nonatomic, assign) BOOL isRefreshing;
+@property (nonatomic, assign) BOOL enablePullToRefresh;
+
 // ovverride
 - (NSFetchRequest *)fetchRequest:(NSManagedObjectContext *)context;
 - (void)fetchRequestFailedWithError:(NSError *)error;
@@ -37,8 +40,12 @@
 - (NSString *)fetchSectionNameKeyPath;
 - (NSString *)fetchCacheName;
 
+- (void)reloadDataFromDB;
+- (void)reloadDataFromNetwork;
+
 // helper for the cells
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath withObject:(id)object;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath withObject:(id)object;
 
 // views
 - (BOOL)shouldShowEmptyView;

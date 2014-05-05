@@ -23,9 +23,9 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
-#import "NSManagedObjectContext+Array.h"
+#import "NSManagedObjectContext+Common.h"
 #import "NSManagedObjectContext+CRUD.h"
-#import "NSManagedObjectContext+Fetch.h"
+#import "NSManagedObjectContext+JSON.h"
 
 @class ACECoreDataManager;
 
@@ -57,7 +57,7 @@
 - (void)endUpdates;
 
 // temporary context
-- (void)perfomOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock;
+- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock;
 
 // singleton
 + (instancetype)sharedManager;
