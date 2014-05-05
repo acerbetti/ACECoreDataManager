@@ -23,30 +23,16 @@
 #import "ACECoreDataTableViewController.h"
 #import "ACECoreDataManager.h"
 
-#import "SVPullToRefresh.h"
-
 @interface ACECoreDataTableViewController ()<NSFetchedResultsControllerDelegate>
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation ACECoreDataTableViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    __weak __typeof(self)weakSelf = self;
-    
-    [self.tableView addPullToRefreshWithActionHandler:^{
-        [weakSelf reloadDataFromNetwork];
-    }];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [self.tableView triggerPullToRefresh];
     [self refreshViewMode];
 }
 
@@ -82,11 +68,6 @@
     [self.tableView reloadData];
 }
 
-- (void)reloadDataFromNetwork
-{
-    [self.tableView.pullToRefreshView stopAnimating];
-}
-
 
 #pragma mark - Properties
 
@@ -111,16 +92,6 @@
         _emptyView = emptyLabel;
     }
     return _emptyView;
-}
-
-- (UIView *)activityIndicatorView
-{
-    return nil;
-}
-
-- (void)setEnablePullToRefresh:(BOOL)enablePullToRefresh
-{
-    self.tableView.showsPullToRefresh = enablePullToRefresh;
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -171,7 +142,7 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
-    self.isRefreshing = YES;
+    self.isUpdating = YES;
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -236,7 +207,7 @@
 {
     [self refreshViewMode];
     [self.tableView endUpdates];
-    self.isRefreshing = NO;
+    self.isUpdating = NO;
 }
 
 

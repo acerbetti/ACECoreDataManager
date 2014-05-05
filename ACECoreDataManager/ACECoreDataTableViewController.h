@@ -30,8 +30,7 @@
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIView *emptyView;
 
-@property (nonatomic, assign) BOOL isRefreshing;
-@property (nonatomic, assign) BOOL enablePullToRefresh;
+@property (nonatomic, assign) BOOL isUpdating;
 
 // ovverride
 - (NSFetchRequest *)fetchRequest:(NSManagedObjectContext *)context;
@@ -41,7 +40,6 @@
 - (NSString *)fetchCacheName;
 
 - (void)reloadDataFromDB;
-- (void)reloadDataFromNetwork;
 
 // helper for the cells
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath withObject:(id)object;
