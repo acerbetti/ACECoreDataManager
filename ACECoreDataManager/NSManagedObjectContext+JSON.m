@@ -228,19 +228,23 @@
         
         NSDictionary *dictionary;
         for (NSManagedObject *object in objects) {
-            NSString *objectId = [object valueForKey:indexName];
+            
+            // make sure we are using the right context
+            NSManagedObject *safeObject = [self safeObjectFromObject:object];
+            
+            id objectId = [safeObject valueForKey:indexName];
             dictionary = dataMap[objectId];
             
             if (dictionary != nil) {
                 // the object is also part of the data, update it
-                [set addObject:[self updateObject:object withDictionary:dictionary formatter:formatter]];
+                [set addObject:[self updateObject:safeObject withDictionary:dictionary formatter:formatter]];
                 
                 // now remove this dictionary
                 [dataMap removeObjectForKey:objectId];
                 
             } else {
                 // delete it
-                [self deleteObject:object];
+                [self deleteObject:safeObject];
             }
         }
         
