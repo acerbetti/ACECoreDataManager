@@ -143,7 +143,7 @@
                                                                formatter:formatter];
                               }
                               
-                              // connet to the parent object
+                              // connect to the parent object
                               [parentObject setValue:managedObject forKey:key];
                           }
                       }
