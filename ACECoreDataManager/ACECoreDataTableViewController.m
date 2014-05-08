@@ -76,6 +76,9 @@
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        [self.view addSubview:_tableView];
     }
     return _tableView;
 }
