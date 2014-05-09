@@ -117,7 +117,10 @@
 
 - (NSDictionary *)dictionaryWithId:(NSInteger)integer
 {
-    return @{ @"uid": [@(integer) stringValue], @"name": [NSString stringWithFormat:@"Object-%d", integer] };
+    return @{
+             @"uid": [@(integer) stringValue],
+             @"name": [NSString stringWithFormat:@"Object-%d", integer]
+            };
 }
 
 

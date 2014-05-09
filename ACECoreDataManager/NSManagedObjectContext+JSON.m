@@ -118,10 +118,10 @@
                       } else {
                           if (isToMany) {
                               // go for the default upsert on the destination's entity
-                              NSSet *set = [self upsertArrayOfDictionary:object
-                                                             withObjects:[managedObject valueForKey:key]
-                                                            inEntityName:destinationEntity.name
-                                                               formatter:formatter];
+                              NSSet *set = [self compareArrayOfDictionary:object
+                                                              withObjects:[managedObject valueForKey:key]
+                                                             inEntityName:destinationEntity.name
+                                                                formatter:formatter];
                               
                               // update the parent object
                               [parentObject setValue:set forKey:key];
@@ -143,7 +143,7 @@
                                                                formatter:formatter];
                               }
                               
-                              // connect to the parent object
+                              // connet to the parent object
                               [parentObject setValue:managedObject forKey:key];
                           }
                       }
@@ -194,16 +194,16 @@
                       inEntityName:(NSString *)entityName
                          formatter:(id<ACECoreDataJSONFormatter>)formatter
 {
-    return [self upsertArrayOfDictionary:dataArray
-                             withObjects:[self fetchAllObjectsForEntityName:entityName sortDescriptor:nil error:nil]
-                            inEntityName:entityName
-                               formatter:formatter];
+    return [self compareArrayOfDictionary:dataArray
+                              withObjects:[self fetchAllObjectsForEntityName:entityName sortDescriptor:nil error:nil]
+                             inEntityName:entityName
+                                formatter:formatter];
 }
 
-- (NSSet *)upsertArrayOfDictionary:(NSArray *)dataArray
-                       withObjects:(id<NSFastEnumeration>)objects
-                      inEntityName:(NSString *)entityName
-                         formatter:(id<ACECoreDataJSONFormatter>)formatter
+- (NSSet *)compareArrayOfDictionary:(NSArray *)dataArray
+                        withObjects:(id<NSFastEnumeration>)objects
+                       inEntityName:(NSString *)entityName
+                          formatter:(id<ACECoreDataJSONFormatter>)formatter
 {
     // get the entity, and the index
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
@@ -228,23 +228,19 @@
         
         NSDictionary *dictionary;
         for (NSManagedObject *object in objects) {
-            
-            // make sure we are using the right context
-            NSManagedObject *safeObject = [self safeObjectFromObject:object];
-            
-            id objectId = [safeObject valueForKey:indexName];
+            NSString *objectId = [object valueForKey:indexName];
             dictionary = dataMap[objectId];
             
             if (dictionary != nil) {
                 // the object is also part of the data, update it
-                [set addObject:[self updateObject:safeObject withDictionary:dictionary formatter:formatter]];
+                [set addObject:[self updateObject:object withDictionary:dictionary formatter:formatter]];
                 
                 // now remove this dictionary
                 [dataMap removeObjectForKey:objectId];
                 
             } else {
                 // delete it
-                [self deleteObject:safeObject];
+                [self deleteObject:object];
             }
         }
         
