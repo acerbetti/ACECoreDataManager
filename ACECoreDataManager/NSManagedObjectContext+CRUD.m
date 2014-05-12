@@ -61,33 +61,33 @@
 
 #pragma mark - Update
 
-- (NSManagedObject *)updateObject:(NSManagedObject *)object
+- (NSManagedObject *)updateObject:(NSManagedObject *)managedObject
               withAttributesBlock:(AttributesBlock)attributesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // make sure we are using the object in the same context
-    object = [self safeObjectFromObject:object];
-    if (object != nil) {
+    managedObject = [self safeObjectFromObject:managedObject];
+    if (managedObject != nil) {
         
         // populate the attributes
         if (attributesBlock != nil) {
-            NSDictionary *attributes = [object.entity attributesByName];
+            NSDictionary *attributes = [managedObject.entity attributesByName];
             [attributes enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSAttributeDescription *attribute, BOOL *stop) {
                 
                 id value = attributesBlock(key, attribute.attributeType);
-                [object setValue:value forKey:key];
+                [managedObject setValue:value forKey:key];
             }];
         }
         
         // populate the relationships
         if (relationshipsBlock != nil) {
-            NSDictionary *relationships = [object.entity relationshipsByName];
+            NSDictionary *relationships = [managedObject.entity relationshipsByName];
             [relationships enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSRelationshipDescription *relationship, BOOL *stop) {
-                relationshipsBlock(key, object, relationship.destinationEntity, relationship.isToMany);
+                relationshipsBlock(key, managedObject, relationship.destinationEntity, relationship.isToMany);
             }];
         }
     }
-    return object;
+    return managedObject;
 }
 
 

@@ -80,77 +80,71 @@
                    withDictionary:(NSDictionary *)dictionary
                         formatter:(id<ACECoreDataJSONFormatter>)formatter
 {
-    // make sure we are using the object in the same context
-    managedObject = [self safeObjectFromObject:managedObject];
-    if (managedObject != nil) {
-        
-        return [self updateObject:managedObject
-              withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
+    return [self updateObject:managedObject
+          withAttributesBlock:^id(NSString *key, NSAttributeType attributeType) {
+              
+              // update only the existing keys
+              id object = [dictionary objectForKey:key];
+              if ([object isKindOfClass:[NSNull class]]) {
+                  return nil;
                   
-                  // update only the existing keys
-                  id object = [dictionary objectForKey:key];
+              } else if (object != nil) {
+                  
+                  if (formatter != nil) {
+                      return [formatter valueForObject:object withType:attributeType];
+                  }
+                  
+                  return object;
+                  
+              } else {
+                  // the key is not part of the dictionary, pass the old value
+                  return [managedObject valueForKey:key];
+              }
+              
+          } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity, BOOL isToMany) {
+              
+              id object = [dictionary objectForKey:key];
+              if (object != nil) {
+                  
                   if ([object isKindOfClass:[NSNull class]]) {
-                      return nil;
                       
-                  } else if (object != nil) {
-                      
-                      if (formatter != nil) {
-                          return [formatter valueForObject:object withType:attributeType];
-                      }
-                      
-                      return object;
+                      // detect the NSNull case and remove the relationship
+                      [parentObject setValue:nil forKey:key];
                       
                   } else {
-                      // the key is not part of the dictionary, pass the old value
-                      return [managedObject valueForKey:key];
-                  }
-                  
-              } andRelationshipsBlock:^(NSString *key, NSManagedObject *parentObject, NSEntityDescription *destinationEntity, BOOL isToMany) {
-                  
-                  id object = [dictionary objectForKey:key];
-                  if (object != nil) {
-                      
-                      if ([object isKindOfClass:[NSNull class]]) {
+                      if (isToMany) {
+                          // go for the default upsert on the destination's entity
+                          NSSet *set = [self compareArrayOfDictionary:object
+                                                          withObjects:[managedObject valueForKey:key]
+                                                         inEntityName:destinationEntity.name
+                                                            formatter:formatter];
                           
-                          // detect the NSNull case and remove the relationship
-                          [parentObject setValue:nil forKey:key];
+                          // update the parent object
+                          [parentObject setValue:set forKey:key];
                           
                       } else {
-                          if (isToMany) {
-                              // go for the default upsert on the destination's entity
-                              NSSet *set = [self compareArrayOfDictionary:object
-                                                              withObjects:[managedObject valueForKey:key]
-                                                             inEntityName:destinationEntity.name
-                                                                formatter:formatter];
+                          // check if the object exists to avoid a query
+                          NSManagedObject *managedObject = [parentObject valueForKey:key];
+                          if (managedObject != nil) {
                               
-                              // update the parent object
-                              [parentObject setValue:set forKey:key];
+                              // TODO: check if the ID is the same
+                              managedObject = [self updateObject:managedObject
+                                                  withDictionary:object
+                                                       formatter:formatter];
                               
                           } else {
-                              // check if the object exists to avoid a query
-                              NSManagedObject *managedObject = [parentObject valueForKey:key];
-                              if (managedObject != nil) {
-                                  
-                                  // TODO: check if the ID is the same
-                                  managedObject = [self updateObject:managedObject
+                              // upsert the object
+                              managedObject = [self upsertEntityName:destinationEntity.name
                                                       withDictionary:object
                                                            formatter:formatter];
-                                  
-                              } else {
-                                  // upsert the object
-                                  managedObject = [self upsertEntityName:destinationEntity.name
-                                                          withDictionary:object
-                                                               formatter:formatter];
-                              }
-                              
-                              // connect to the parent object
-                              [parentObject setValue:managedObject forKey:key];
                           }
+                          
+                          // connect to the parent object
+                          [parentObject setValue:managedObject forKey:key];
                       }
                   }
-              }];
-    }
-    return managedObject;
+              }
+          }];
 }
 
 

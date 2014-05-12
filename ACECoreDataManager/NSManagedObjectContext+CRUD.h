@@ -48,7 +48,7 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 /// @name Update Helpers
 ///-----------------------------------------------------------
 
-- (NSManagedObject *)updateObject:(NSManagedObject *)object
+- (NSManagedObject *)updateObject:(NSManagedObject *)managedObject
               withAttributesBlock:(AttributesBlock)attributesBlock
             andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
 
