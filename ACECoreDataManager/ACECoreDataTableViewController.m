@@ -196,7 +196,10 @@
             break;
             
         case NSFetchedResultsChangeMove:
-            
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationTop];
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationBottom];
             break;
             
         case NSFetchedResultsChangeDelete:
