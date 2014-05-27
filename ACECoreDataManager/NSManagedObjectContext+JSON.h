@@ -33,17 +33,17 @@
 @interface NSManagedObjectContext (JSON)
 
 // single object
-- (NSManagedObject *)insertDictionary:(NSDictionary *)dictionary
-                         inEntityName:(NSString *)entityName
-                            formatter:(id<ACECoreDataJSONFormatter>)formatter;
+- (id)insertDictionary:(NSDictionary *)dictionary
+          inEntityName:(NSString *)entityName
+             formatter:(id<ACECoreDataJSONFormatter>)formatter;
 
-- (NSManagedObject *)updateObject:(NSManagedObject *)managedObject
-                   withDictionary:(NSDictionary *)dictionary
-                        formatter:(id<ACECoreDataJSONFormatter>)formatter;
+- (id)updateManagedObject:(NSManagedObject *)managedObject
+           withDictionary:(NSDictionary *)dictionary
+                formatter:(id<ACECoreDataJSONFormatter>)formatter;
 
-- (NSManagedObject *)upsertEntityName:(NSString *)entityName
-                       withDictionary:(NSDictionary *)dictionary
-                            formatter:(id<ACECoreDataJSONFormatter>)formatter;
+- (id)upsertEntityName:(NSString *)entityName
+        withDictionary:(NSDictionary *)dictionary
+             formatter:(id<ACECoreDataJSONFormatter>)formatter;
 
 
 

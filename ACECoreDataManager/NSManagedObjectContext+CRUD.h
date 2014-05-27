@@ -37,9 +37,9 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 /// @name Insert Helpers
 ///-----------------------------------------------------------
 
-- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
-                      withAttributesBlock:(AttributesBlock)attributesBlock
-                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
+- (id)insertObjectInEntity:(NSString *)entityName
+       withAttributesBlock:(AttributesBlock)attributesBlock
+     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
 
 
 
@@ -48,9 +48,9 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 /// @name Update Helpers
 ///-----------------------------------------------------------
 
-- (NSManagedObject *)updateObject:(NSManagedObject *)managedObject
-              withAttributesBlock:(AttributesBlock)attributesBlock
-            andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
+- (id)updateManagedObject:(NSManagedObject *)managedObject
+      withAttributesBlock:(AttributesBlock)attributesBlock
+    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
 
 
 
@@ -59,9 +59,9 @@ typedef void (^RelationshipsBlock)(NSString *key, NSManagedObject *parentObject,
 /// @name Upsert Helpers
 ///-----------------------------------------------------------
 
-- (NSManagedObject *)upsertObjectInEntity:(NSString *)entityName
-                      withAttributesBlock:(AttributesBlock)attributesBlock
-                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
+- (id)upsertObjectInEntity:(NSString *)entityName
+       withAttributesBlock:(AttributesBlock)attributesBlock
+     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock;
 
 
 

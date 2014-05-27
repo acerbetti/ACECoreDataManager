@@ -26,9 +26,9 @@
 
 #pragma mark - Insert
 
-- (NSManagedObject *)insertObjectInEntity:(NSString *)entityName
-                      withAttributesBlock:(AttributesBlock)attributesBlock
-                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
+- (id)insertObjectInEntity:(NSString *)entityName
+       withAttributesBlock:(AttributesBlock)attributesBlock
+     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // create a new object
     __block NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName
@@ -61,9 +61,9 @@
 
 #pragma mark - Update
 
-- (NSManagedObject *)updateObject:(NSManagedObject *)managedObject
-              withAttributesBlock:(AttributesBlock)attributesBlock
-            andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
+- (id)updateManagedObject:(NSManagedObject *)managedObject
+      withAttributesBlock:(AttributesBlock)attributesBlock
+    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     // make sure we are using the object in the same context
     managedObject = [self safeObjectFromObject:managedObject];
@@ -93,9 +93,9 @@
 
 #pragma mark - Upsert
 
-- (NSManagedObject *)upsertObjectInEntity:(NSString *)entityName
-                      withAttributesBlock:(AttributesBlock)attributesBlock
-                    andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
+- (id)upsertObjectInEntity:(NSString *)entityName
+       withAttributesBlock:(AttributesBlock)attributesBlock
+     andRelationshipsBlock:(RelationshipsBlock)relationshipsBlock
 {
     if (attributesBlock != nil) {
         // get the object id
@@ -105,9 +105,9 @@
         // get the object to update
         NSManagedObject *object = [self fetchObjectForEntityName:entityName withUniqueId:objectId error:nil];
         if (object != nil) {
-            return [self updateObject:object
-                  withAttributesBlock:attributesBlock
-                andRelationshipsBlock:relationshipsBlock];
+            return [self updateManagedObject:object
+                         withAttributesBlock:attributesBlock
+                       andRelationshipsBlock:relationshipsBlock];
             
         } else {
             return [self insertObjectInEntity:entityName
