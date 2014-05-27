@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ACECoreDataNetworkTableViewController"
-  s.version      = "0.0.2"
+  s.version      = "0.0.4"
   s.summary      = "Adding pull to refresh to the table view controller included in the ACECoreDataManager."
 
   s.homepage     = "https://github.com/acerbetti/ACECoreDataManager"
@@ -61,7 +61,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/acerbetti/ACECoreDataManager.git", :tag => "0.0.2" }
+  s.source       = { :git => "https://github.com/acerbetti/ACECoreDataManager.git", :tag => "0.0.4" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
