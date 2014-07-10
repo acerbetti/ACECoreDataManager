@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ACECoreDataManager"
-  s.version      = "0.0.4"
+  s.version      = "0.0.5"
   s.summary      = "Core data manager."
 
   s.homepage     = "https://github.com/acerbetti/ACECoreDataManager"
@@ -63,7 +63,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/acerbetti/ACECoreDataManager.git", :tag => "0.0.4" }
+  s.source       = { :git => "https://github.com/acerbetti/ACECoreDataManager.git", :tag => s.version.to_s }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
