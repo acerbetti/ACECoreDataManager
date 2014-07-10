@@ -215,7 +215,7 @@
 
 #pragma mark - Context
 
-- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock
+- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock completeBlock:(dispatch_block_t)completeBlock
 {
     if (actionBlock != nil) {
         NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
@@ -232,6 +232,11 @@
                     // make sure the handle error is executed on the main thread
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self handleError:error];
+                    });
+                    
+                } else if (completeBlock != nil) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completeBlock();
                     });
                 }
             }

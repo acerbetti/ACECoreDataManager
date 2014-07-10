@@ -57,7 +57,7 @@
 - (void)endUpdates;
 
 // temporary context
-- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock;
+- (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock completeBlock:(dispatch_block_t)completeBlock;
 
 // singleton
 + (instancetype)sharedManager;
