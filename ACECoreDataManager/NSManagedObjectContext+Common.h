@@ -42,7 +42,7 @@
  */
 - (NSAttributeDescription *)indexedAttributeForEntityName:(NSString *)entityName;
 
-- (NSManagedObject *)safeObjectFromObject:(NSManagedObject *)object;
+- (id)safeObjectFromObject:(NSManagedObject *)object;
 
 
 - (NSArray *)fetchAllObjectsForEntityName:(NSString *)entityName
@@ -53,8 +53,8 @@
                           sortDescriptors:(NSArray *)sortDescriptors
                                     error:(NSError **)error;
 
-- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName
-                                 withUniqueId:(id)uniqueId
-                                        error:(NSError **)error;
+- (id)fetchObjectForEntityName:(NSString *)entityName
+                  withUniqueId:(id)uniqueId
+                         error:(NSError **)error;
 
 @end

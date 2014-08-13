@@ -45,7 +45,7 @@
     return nil;
 }
 
-- (NSManagedObject *)safeObjectFromObject:(NSManagedObject *)object
+- (id)safeObjectFromObject:(NSManagedObject *)object
 {
     if (object.managedObjectContext != self) {
         
@@ -79,9 +79,9 @@
                                         error:error];
 }
 
-- (NSManagedObject *)fetchObjectForEntityName:(NSString *)entityName
-                                 withUniqueId:(id)uniqueId
-                                        error:(NSError **)error
+- (id)fetchObjectForEntityName:(NSString *)entityName
+                  withUniqueId:(id)uniqueId
+                         error:(NSError **)error
 {
     // find the index name
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
