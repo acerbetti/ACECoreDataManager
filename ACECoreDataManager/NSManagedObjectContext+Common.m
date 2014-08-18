@@ -47,7 +47,7 @@
 
 - (id)safeObjectFromObject:(NSManagedObject *)object
 {
-    if (object.managedObjectContext != self) {
+    if (object != nil && object.managedObjectContext != self) {
         
         // first, make sure is not temporary
         if ([object.managedObjectContext obtainPermanentIDsForObjects:@[object] error:nil]) {
