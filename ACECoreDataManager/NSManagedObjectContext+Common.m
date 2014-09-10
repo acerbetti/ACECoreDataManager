@@ -85,10 +85,9 @@
 {
     // find the index name
     NSString *indexName = [[self indexedAttributeForEntityName:entityName] name];
-    NSString *predicateFormat = [NSString stringWithFormat:@"%@ == %%@", indexName];
     
     // build the predicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, uniqueId];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %@", indexName, uniqueId];
     NSArray *results = [self fetchAllObjectsForEntityName:entityName
                                             withPredicate:predicate
                                           sortDescriptors:nil
