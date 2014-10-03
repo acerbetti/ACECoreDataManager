@@ -255,7 +255,15 @@
         [self.managedObjectContext performBlock:^{
             
             NSError *error;
-            if (![self.managedObjectContext save:&error]) {
+            NSArray *objects = [self.managedObjectContext.updatedObjects allObjects];
+            if ([self.managedObjectContext save:&error]) {
+                
+                // get the real objects
+                if (![self.managedObjectContext obtainPermanentIDsForObjects:objects error:&error]){
+                    [self handleError:error];
+                }
+                
+            } else {
                 [self handleError:error];
             }
         }];
