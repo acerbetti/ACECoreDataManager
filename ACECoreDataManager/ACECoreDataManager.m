@@ -52,6 +52,7 @@
     self = [super init];
     if (self) {
         self.autoSave = YES;
+        self.useBackgroundWriter = YES;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(saveContext)
@@ -104,6 +105,7 @@
             
             // create the main context on the main thread
             _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+            _managedObjectContext.name = @"Main";
             
             // add the observer for auto save
             [[NSNotificationCenter defaultCenter] addObserver:self
@@ -116,17 +118,18 @@
                                                          name:NSManagedObjectContextDidSaveNotification
                                                        object:nil];
             
-            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f) {
+            if (self.useBackgroundWriter && [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f) {
                 // http://www.cocoanetics.com/2012/07/multi-context-coredata/
                 _privateWriterContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-                [_privateWriterContext setPersistentStoreCoordinator:coordinator];
+                _privateWriterContext.persistentStoreCoordinator = coordinator;
+                _privateWriterContext.name = @"Writer";
                 
                 // set the writer as a worker thread
                 _managedObjectContext.parentContext = self.privateWriterContext;
                 
             } else {
                 // use just the main thread on iOS 5
-                [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+                _managedObjectContext.persistentStoreCoordinator = coordinator;
             }
         }
     }
@@ -215,10 +218,21 @@
 
 #pragma mark - Context
 
+- (void)setUseBackgroundWriter:(BOOL)useBackgroundWriter
+{
+    if (_managedObjectContext == nil) {
+        _useBackgroundWriter = useBackgroundWriter;
+        
+    } else {
+        @throw [NSException exceptionWithName:@"Internal exception" reason:@"Context already created" userInfo:nil];
+    }
+}
+
 - (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock completeBlock:(dispatch_block_t)completeBlock
 {
     if (actionBlock != nil) {
         NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        temporaryContext.name = @"Temp";
         temporaryContext.parentContext = self.managedObjectContext;
         
         [temporaryContext performBlock:^{
@@ -255,15 +269,7 @@
         [self.managedObjectContext performBlock:^{
             
             NSError *error;
-            NSArray *objects = [self.managedObjectContext.updatedObjects allObjects];
-            if ([self.managedObjectContext save:&error]) {
-                
-                // get the real objects
-                if (![self.managedObjectContext obtainPermanentIDsForObjects:objects error:&error]){
-                    [self handleError:error];
-                }
-                
-            } else {
+            if (![self.managedObjectContext save:&error]) {
                 [self handleError:error];
             }
         }];

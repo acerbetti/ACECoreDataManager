@@ -46,6 +46,7 @@
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property (assign, nonatomic) BOOL useBackgroundWriter; // default YES
 @property (weak, nonatomic) id<ACECoreDataDelegate> delegate;
 
 // context
