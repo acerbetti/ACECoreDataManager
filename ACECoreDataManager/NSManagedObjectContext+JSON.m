@@ -115,7 +115,7 @@
                              if (isToMany) {
                                  // go for the default upsert on the destination's entity
                                  NSSet *set = [self compareArrayOfDictionary:object
-                                                                 withObjects:[managedObject valueForKey:key]
+                                                                 withObjects:[[managedObject valueForKey:key] copy]
                                                                 inEntityName:destinationEntity.name
                                                                    formatter:formatter];
                                  
