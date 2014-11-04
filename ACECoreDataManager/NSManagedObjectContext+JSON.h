@@ -57,7 +57,7 @@
                          formatter:(id<ACECoreDataJSONFormatter>)formatter;
 
 - (NSSet *)compareArrayOfDictionary:(NSArray *)dataArray
-                        withObjects:(id<NSFastEnumeration>)objects
+                        withObjects:(NSArray *)objects
                        inEntityName:(NSString *)entityName
                           formatter:(id<ACECoreDataJSONFormatter>)formatter;
 
