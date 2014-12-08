@@ -140,11 +140,10 @@
 // If the model doesn't already exist, it is created from the application's model.
 - (NSManagedObjectModel *)managedObjectModel
 {
-    if (_managedObjectModel != nil) {
-        return _managedObjectModel;
+    if (_managedObjectModel == nil) {
+        NSURL *modelURL = [self.delegate modelURLForManager:self];
+        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     }
-    NSURL *modelURL = [self.delegate modelURLForManager:self];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
 
@@ -152,35 +151,35 @@
 // If the coordinator doesn't already exist, it is created and the application's store added to it.
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
-    if (_persistentStoreCoordinator != nil) {
-        return _persistentStoreCoordinator;
-    }
-    
-    NSURL *storeURL = [self.delegate storeURLForManager:self];
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    
-    NSDictionary *options = @{
-                              NSMigratePersistentStoresAutomaticallyOption: @YES,
-                              NSInferMappingModelAutomaticallyOption: @YES
-                              };
-    
-    NSError *error = nil;
-    self.persistentStore =
-    [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                              configuration:nil
-                                                        URL:storeURL
-                                                    options:options
-                                                      error:&error];
-    if (self.persistentStore == nil) {
-        NSLog(@"Error adding the persistent store: %@. DB removed", error.localizedDescription);
-        [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:&error];
+    if (_persistentStoreCoordinator == nil) {
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+        
+        NSDictionary *options = @{
+                                  NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                  NSInferMappingModelAutomaticallyOption: @YES
+                                  };
+        
+        
+        NSError *error = nil;
+        NSURL *storeURL = [self.delegate storeURLForManager:self];
         
         self.persistentStore =
-        [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+        [_persistentStoreCoordinator addPersistentStoreWithType:(storeURL != nil) ? NSSQLiteStoreType : NSInMemoryStoreType
                                                   configuration:nil
                                                             URL:storeURL
                                                         options:options
                                                           error:&error];
+        if (self.persistentStore == nil) {
+            NSLog(@"Error adding the persistent store: %@. DB removed", error.localizedDescription);
+            [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:&error];
+            
+            self.persistentStore =
+            [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                      configuration:nil
+                                                                URL:storeURL
+                                                            options:options
+                                                              error:&error];
+        }
     }
     return _persistentStoreCoordinator;
 }

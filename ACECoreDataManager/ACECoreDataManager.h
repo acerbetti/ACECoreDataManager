@@ -33,7 +33,7 @@
 
 @required
 - (NSURL *)modelURLForManager:(ACECoreDataManager *)manager;
-- (NSURL *)storeURLForManager:(ACECoreDataManager *)manager;
+- (NSURL *)storeURLForManager:(ACECoreDataManager *)manager; // return nil for in memory storage
 
 @optional
 - (void)coreDataManager:(ACECoreDataManager *)manager didFailOperationWithError:(NSError *)error;
