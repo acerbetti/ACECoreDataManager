@@ -174,7 +174,7 @@
             [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:&error];
             
             self.persistentStore =
-            [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+            [_persistentStoreCoordinator addPersistentStoreWithType:(storeURL != nil) ? NSSQLiteStoreType : NSInMemoryStoreType
                                                       configuration:nil
                                                                 URL:storeURL
                                                             options:options
@@ -297,8 +297,10 @@
         [self handleError:error];
     }
     
-    if (![[NSFileManager defaultManager] removeItemAtPath:[self persistentStore].URL.path error:&error]) {
-        [self handleError:error];
+    if (![self.persistentStore.type isEqualToString:NSInMemoryStoreType]) {
+        if (![[NSFileManager defaultManager] removeItemAtPath:self.persistentStore.URL.path error:&error]) {
+            [self handleError:error];
+        }
     }
     
     _persistentStoreCoordinator = nil;
