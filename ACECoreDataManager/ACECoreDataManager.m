@@ -26,10 +26,7 @@
 
 @interface ACECoreDataManager ()
 @property (strong, nonatomic) NSManagedObjectContext *privateWriterContext;
-@property (strong, nonatomic) NSManagedObjectContext *temporaryContext;
-
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) NSPersistentStore *persistentStore;
 @property (assign, nonatomic) BOOL autoSave; // save the context when something change
@@ -110,10 +107,6 @@
             _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             _managedObjectContext.name = @"Main";
             
-            _temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            _temporaryContext.name = @"Processor";
-            _temporaryContext.parentContext = _managedObjectContext;
-
             // add the observer for auto save
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(contextObjectsDidChange:)
@@ -208,7 +201,7 @@
     NSManagedObjectContext *notificationContext = notification.object;
     NSManagedObjectContext *parentContext = notificationContext.parentContext;
     
-    [parentContext performBlock:^{
+    [parentContext performBlockAndWait:^{
         [parentContext mergeChangesFromContextDidSaveNotification:notification];
         
         NSError *error;
@@ -237,17 +230,18 @@
 - (void)performOperation:(void (^)(NSManagedObjectContext *temporaryContext))actionBlock completeBlock:(dispatch_block_t)completeBlock
 {
     if (actionBlock != nil) {
+        NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        temporaryContext.name = @"Temp";
+        temporaryContext.parentContext = self.managedObjectContext;
         
-        __weak __typeof(self)weakSelf = self;
-        
-        [weakSelf.temporaryContext performBlock:^{
-            actionBlock(weakSelf.temporaryContext);
+        [temporaryContext performBlockAndWait:^{
+            actionBlock(temporaryContext);
             
             // save the temporary context
             NSError *error;
-            if ([weakSelf.temporaryContext hasChanges]) {
+            if ([temporaryContext hasChanges]) {
                 
-                if (![weakSelf.temporaryContext save:&error]) {
+                if (![temporaryContext save:&error]) {
                     // make sure the handle error is executed on the main thread
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self handleError:error];
@@ -262,7 +256,7 @@
             } else if (completeBlock != nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completeBlock();
-                });                
+                });
             }
         }];
     }
