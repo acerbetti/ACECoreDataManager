@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ACECoreDataManager"
-  s.version      = "0.1.7"
+  s.version      = "0.1.8"
   s.summary      = "Core data manager."
 
   s.homepage     = "https://github.com/acerbetti/ACECoreDataManager"
