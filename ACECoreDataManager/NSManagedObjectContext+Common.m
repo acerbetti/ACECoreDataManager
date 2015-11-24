@@ -53,7 +53,7 @@
         if ([object.managedObjectContext obtainPermanentIDsForObjects:@[object] error:nil]) {
             
             // second, load the object in the current context
-            return [self existingObjectWithID:object.objectID error:nil];
+            return [self objectWithID:object.objectID];
         }
     }
     return object;
