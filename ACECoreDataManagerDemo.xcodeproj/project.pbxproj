@@ -303,7 +303,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ACE;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Aceland;
 				TargetAttributes = {
 					80C5A70218F606250061B39C = {
@@ -436,6 +436,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -496,6 +497,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACECoreDataManagerDemo/ACECoreDataManagerDemo-Prefix.pch";
 				INFOPLIST_FILE = "ACECoreDataManagerDemo/ACECoreDataManagerDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.acerbetti.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -509,6 +511,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACECoreDataManagerDemo/ACECoreDataManagerDemo-Prefix.pch";
 				INFOPLIST_FILE = "ACECoreDataManagerDemo/ACECoreDataManagerDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.acerbetti.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -530,6 +533,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "ACECoreDataManagerDemoTests/ACECoreDataManagerDemoTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.acerbetti.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -548,6 +552,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACECoreDataManagerDemo/ACECoreDataManagerDemo-Prefix.pch";
 				INFOPLIST_FILE = "ACECoreDataManagerDemoTests/ACECoreDataManagerDemoTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.acerbetti.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

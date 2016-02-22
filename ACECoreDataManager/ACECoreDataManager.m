@@ -54,6 +54,7 @@
         self.autoSave = YES;
         self.useBackgroundWriter = YES;
         
+#if TARGET_OS_IOS
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(saveContext)
                                                      name:UIApplicationWillTerminateNotification
@@ -63,6 +64,18 @@
                                                  selector:@selector(saveContext)
                                                      name:UIApplicationWillResignActiveNotification
                                                    object:nil];
+#else
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(saveContext)
+                                                     name:NSApplicationWillTerminateNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(saveContext)
+                                                     name:NSApplicationWillResignActiveNotification
+                                                   object:nil];
+#endif
+        
     }
     return self;
 }
@@ -83,6 +96,7 @@
                                              selector:@selector(saveContext)
                                                object:nil];
     
+#if TARGET_OS_IOS
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillTerminateNotification
                                                   object:nil];
@@ -90,6 +104,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillResignActiveNotification
                                                   object:nil];
+#else
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSApplicationWillTerminateNotification
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSApplicationWillResignActiveNotification
+                                                  object:nil];
+#endif
 }
 
 
