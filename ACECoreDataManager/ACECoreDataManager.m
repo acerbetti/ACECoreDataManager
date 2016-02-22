@@ -310,8 +310,10 @@
 
 - (void)deleteContext
 {
+#if TARGET_OS_IOS
     // delete all the caches
     [NSFetchedResultsController deleteCacheWithName:nil];
+#endif
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self
                                              selector:@selector(saveContext)
