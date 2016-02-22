@@ -34,7 +34,8 @@
 
 @implementation ACECoreDataManager
 
-@synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectContext    = _managedObjectContext;
+@synthesize useBackgroundWriter     = _useBackgroundWriter;
 
 + (instancetype)sharedManager
 {
@@ -141,7 +142,7 @@
                                                          name:NSManagedObjectContextDidSaveNotification
                                                        object:nil];
             
-            if (self.useBackgroundWriter && [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f) {
+            if (self.useBackgroundWriter) {
                 // http://www.cocoanetics.com/2012/07/multi-context-coredata/
                 _privateWriterContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
                 _privateWriterContext.persistentStoreCoordinator = coordinator;
@@ -157,6 +158,15 @@
         }
     }
     return _managedObjectContext;
+}
+
+- (BOOL)useBackgroundWriter
+{
+#if TARGET_OS_IOS
+    return _useBackgroundWriter && [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f;
+#else
+    return _useBackgroundWriter;
+#endif
 }
 
 // Returns the managed object model for the application.
