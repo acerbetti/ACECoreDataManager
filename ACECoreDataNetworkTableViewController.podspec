@@ -114,4 +114,8 @@ Pod::Spec.new do |s|
   s.dependency "ACECoreDataManager"
   s.dependency "SVPullToRefresh", "~> 0.4"
 
+
+  s.deprecated = true
+  s.deprecated_in_favor_of = "ACECoreDataManager"
+
 end
