@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = "ACECoreDataManager"
-  s.version               = "0.2.1"
+  s.version               = "0.2.2"
   s.summary               = "Core data manager."
   s.homepage              = "https://github.com/acerbetti/ACECoreDataManager"
   s.license               = { :type => "MIT", :file => "LICENSE" }
