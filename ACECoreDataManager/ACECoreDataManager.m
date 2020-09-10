@@ -327,6 +327,8 @@
                                                     name:NSManagedObjectContextDidSaveNotification
                                                   object:nil];
     
+    [self.managedObjectContext reset];
+
     NSError *error;
     if (![self.persistentStoreCoordinator removePersistentStore:self.persistentStore error:&error]) {
         [self handleError:error];
